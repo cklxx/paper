@@ -28,3 +28,13 @@ uvicorn backend.main:app --reload --host 0.0.0.0 --port 8000
 # API 调试
 curl http://localhost:8000/papers
 ```
+
+### 数据与爬虫
+
+- 示例数据来自 `data/paper_seeds.json`，经变体展开得到 100 篇带来源标注的示例论文。
+- FastAPI 暴露了 `/crawl` 接口：`POST /crawl {"url": "...", "topic": "..."}` 会抓取网页正文，自动转写成 5 张卡片并写入本地 SQLite（默认 `backend/papers.db`，可通过 `PAPER_DB_PATH` 覆盖）。
+
+### 一键脚本
+
+- 开发模式：`./scripts/dev.sh` 会装好依赖并同时拉起 `uvicorn --reload` 与前端 `vite dev`。
+- 部署验证：`./scripts/deploy.sh` 会执行 `npm ci && npm run build` 后分别启动后端（多进程）与前端 `vite preview` 服务。按 `Ctrl+C` 即可退出并清理进程。

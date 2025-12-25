@@ -1,5 +1,6 @@
-from pydantic import BaseModel
 from typing import List, Literal
+
+from pydantic import BaseModel
 
 
 CardType = Literal["hook", "intuition", "method", "tradeoff", "who"]
@@ -35,8 +36,14 @@ class WhoCard(BaseModel):
 Card = HookCard | IntuitionCard | MethodCard | TradeoffCard | WhoCard
 
 
+class Source(BaseModel):
+    title: str
+    url: str
+
+
 class Paper(BaseModel):
     id: str
     title: str
     topic: str
+    source: Source
     cards: List[Card]

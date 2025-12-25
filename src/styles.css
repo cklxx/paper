@@ -20,32 +20,8 @@ body {
   min-height: 100vh;
   padding: 24px 20px 28px;
   display: grid;
-  grid-template-rows: auto 1fr auto;
-  gap: 16px;
-}
-
-.top-bar {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  letter-spacing: 0.01em;
-}
-
-.topic-tag {
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #6366f1, #22d3ee);
-  color: #0b0d10;
-  font-weight: 700;
-  font-size: 13px;
-}
-
-.title {
-  color: #a5b4fc;
-  font-weight: 600;
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  grid-template-rows: 1fr;
+  gap: 0;
 }
 
 .card-frame {
@@ -145,60 +121,6 @@ ol {
   gap: 12px;
 }
 
-.progress-dots {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-
-.dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: rgba(226, 232, 240, 0.25);
-  transition: all 0.2s ease;
-}
-
-.dot.active {
-  width: 18px;
-  border-radius: 8px;
-  background: #c4b5fd;
-}
-
-.controls {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-}
-
-button {
-  background: rgba(255, 255, 255, 0.08);
-  color: #f8fafc;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 12px;
-  padding: 10px 12px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-button:hover {
-  border-color: rgba(255, 255, 255, 0.24);
-}
-
-.footer {
-  display: grid;
-  gap: 4px;
-  justify-items: center;
-  text-align: center;
-  color: #cbd5e1;
-}
-
-.hint {
-  margin: 6px 0 0;
-  font-size: 13px;
-  color: #94a3b8;
-}
 
 @media (max-width: 640px) {
   .card {
