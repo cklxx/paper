@@ -1,0 +1,262 @@
+[
+  {
+    "id": "attention-is-all-you-need",
+    "title": "Attention Is All You Need",
+    "topic": "Architecture",
+    "source": {
+      "title": "Vaswani et al., NeurIPS 2017",
+      "url": "https://arxiv.org/abs/1706.03762"
+    },
+    "cards": {
+      "hook": "完全抛弃 RNN，靠注意力一统序列建模。",
+      "intuition": "直觉：并行不适合序列；作者：全局注意力 + 位置编码照样能抓远距离依赖。",
+      "method": [
+        "多头自注意力让子空间各管一摊",
+        "显式位置编码补回顺序感",
+        "解码器遮罩自注意力完成自回归生成"
+      ],
+      "tradeoff": {
+        "good": "训练速度飙升、长程依赖更稳",
+        "bad": "注意力复杂度 O(n²)，序列越长越贵"
+      },
+      "who": {
+        "do": "多语种、长上下文、需要梯度并行的任务",
+        "skip": "极低算力或超长序列必须线性复杂度的场景"
+      }
+    }
+  },
+  {
+    "id": "lora-low-rank",
+    "title": "LoRA: Low-Rank Adaptation",
+    "topic": "Training",
+    "source": {
+      "title": "Hu et al., ICLR 2022",
+      "url": "https://arxiv.org/abs/2106.09685"
+    },
+    "cards": {
+      "hook": "微调不改动原模型权重，只塞一层低秩矩阵。",
+      "intuition": "直觉：全量微调才够表达；作者：增量低秩更新就能覆盖任务差异。",
+      "method": [
+        "给线性层添加可训练的低秩分支",
+        "冻结原权重，训练低秩参数",
+        "推理时合并或保持分支以节省存储"
+      ],
+      "tradeoff": {
+        "good": "显存占用骤降，可快速切换任务",
+        "bad": "秩过低时表达力有限，仍需挑秩超参"
+      },
+      "who": {
+        "do": "多任务、多版本快速迭代的团队",
+        "skip": "极度追求极限指标、可负担全量微调"
+      }
+    }
+  },
+  {
+    "id": "direct-preference-optimization",
+    "title": "Direct Preference Optimization",
+    "topic": "Alignment",
+    "source": {
+      "title": "Rafailov et al., NeurIPS 2024",
+      "url": "https://arxiv.org/abs/2305.18290"
+    },
+    "cards": {
+      "hook": "跳过奖励模型，直接用偏好数据更新语言模型。",
+      "intuition": "直觉：需要奖励模型桥接人类偏好；作者：对比式目标就能直接推参数。",
+      "method": [
+        "把偏好对构造成对比损失",
+        "用 KL 正则约束分布漂移",
+        "在原语言模型上直接反向传播"
+      ],
+      "tradeoff": {
+        "good": "训练链路变短，减少奖励模型偏差",
+        "bad": "仍需小心 KL 系数选择，稳定性靠调参"
+      },
+      "who": {
+        "do": "有偏好数据、想快速对齐回复风格的团队",
+        "skip": "偏好数据稀缺或需精细奖励设计的场景"
+      }
+    }
+  },
+  {
+    "id": "flashattention",
+    "title": "FlashAttention",
+    "topic": "Inference",
+    "source": {
+      "title": "Dao et al., NeurIPS 2022",
+      "url": "https://arxiv.org/abs/2205.14135"
+    },
+    "cards": {
+      "hook": "瓶颈不是算力，是显存往返：把注意力算子塞进 SRAM。",
+      "intuition": "直觉：FLOPs 决定速度；作者：IO 才是主要延迟。",
+      "method": [
+        "块化 QKV，按 tile 计算注意力",
+        "在线归一化避免中间结果写回",
+        "保持精度同时减少 DRAM 访问"
+      ],
+      "tradeoff": {
+        "good": "吞吐和能耗大幅降低",
+        "bad": "实现依赖硬件特性，需维护 kernel"
+      },
+      "who": {
+        "do": "GPU 推理/训练、追求极致吞吐",
+        "skip": "CPU-only 或不愿维护自定义算子"
+      }
+    }
+  },
+  {
+    "id": "speculative-decoding",
+    "title": "Speculative Decoding",
+    "topic": "Inference",
+    "source": {
+      "title": "Chen et al., ArXiv 2023",
+      "url": "https://arxiv.org/abs/2302.01318"
+    },
+    "cards": {
+      "hook": "让小模型先猜一批 token，大模型批量验收。",
+      "intuition": "直觉：大模型必须逐 token 谨慎生成；作者：先粗后精可并行。",
+      "method": [
+        "训练草稿模型快速生成候选",
+        "大模型一次性验证并纠错",
+        "错的重算，正确的直接接受"
+      ],
+      "tradeoff": {
+        "good": "延迟显著下降，GPU 利用率更高",
+        "bad": "需要维护额外草稿模型，域迁移要重训"
+      },
+      "who": {
+        "do": "对延迟敏感、流式场景",
+        "skip": "离线批处理或模型切换频繁的环境"
+      }
+    }
+  },
+  {
+    "id": "llava-multimodal",
+    "title": "LLaVA: Large Language and Vision Assistant",
+    "topic": "Multimodal",
+    "source": {
+      "title": "Liu et al., CVPR 2024",
+      "url": "https://arxiv.org/abs/2304.08485"
+    },
+    "cards": {
+      "hook": "把 CLIP 视觉编码拼进大语言模型，秒变图文助手。",
+      "intuition": "直觉：多模态要新模型；作者：视觉 token 也能当前缀注入。",
+      "method": [
+        "用 CLIP/ViT 编码图像为特征",
+        "线性投影成语言 token 空间",
+        "指令微调让模型学会引用视觉上下文"
+      ],
+      "tradeoff": {
+        "good": "复用成熟 LLM，参数高效",
+        "bad": "图像分辨率受限，细粒度定位不够"
+      },
+      "who": {
+        "do": "需要快速拿到图文问答原型",
+        "skip": "要求精细检测或工业视觉精度"
+      }
+    }
+  },
+  {
+    "id": "segment-anything",
+    "title": "Segment Anything",
+    "topic": "Vision",
+    "source": {
+      "title": "Kirillov et al., ICCV 2023",
+      "url": "https://arxiv.org/abs/2304.02643"
+    },
+    "cards": {
+      "hook": "一次训练，任意图片都能零样本分割。",
+      "intuition": "直觉：分割必须针对特定类；作者：可提示的通用分割器能覆盖开放域。",
+      "method": [
+        "用大规模遮罩数据训练提示感知模型",
+        "编码点/框/文本提示生成掩码",
+        "解耦图像编码与提示解码"
+      ],
+      "tradeoff": {
+        "good": "零样本通用性强，标注成本低",
+        "bad": "对极小目标或细边界仍有限"
+      },
+      "who": {
+        "do": "需要快速标注/交互式分割工具",
+        "skip": "极端精度要求的工业测量"
+      }
+    }
+  },
+  {
+    "id": "mamba-ssm",
+    "title": "Mamba State Space Models",
+    "topic": "Architecture",
+    "source": {
+      "title": "Gu & Dao, NeurIPS 2024",
+      "url": "https://arxiv.org/abs/2312.00752"
+    },
+    "cards": {
+      "hook": "不用注意力也能长程建模，靠可选序列选择性状态空间。",
+      "intuition": "直觉：只有注意力能抓远距离；作者：门控 SSM 也能动态关注关键信息。",
+      "method": [
+        "可学习的选择门过滤输入",
+        "状态空间核支持长序列稳定传播",
+        "并行卷积近似加速训练"
+      ],
+      "tradeoff": {
+        "good": "线性复杂度，长序列友好",
+        "bad": "生态和工具链不如 Transformer 丰富"
+      },
+      "who": {
+        "do": "长日志、基因序列等超长输入",
+        "skip": "高度依赖成熟注意力优化的项目"
+      }
+    }
+  },
+  {
+    "id": "retrieval-augmented-generation",
+    "title": "Retrieval-Augmented Generation",
+    "topic": "Retrieval",
+    "source": {
+      "title": "Lewis et al., NeurIPS 2020",
+      "url": "https://arxiv.org/abs/2005.11401"
+    },
+    "cards": {
+      "hook": "别再死记硬背，让模型实时查库后回答。",
+      "intuition": "直觉：参数化记忆即可；作者：外部知识库能降低幻觉。",
+      "method": [
+        "先用向量检索取回相关文档",
+        "拼接到提示中生成回答",
+        "可选地用检索到的证据做重排序"
+      ],
+      "tradeoff": {
+        "good": "知识可更新，答案可追溯",
+        "bad": "检索质量瓶颈显现，延迟上升"
+      },
+      "who": {
+        "do": "法律、客服等需要可追溯知识的场景",
+        "skip": "对延迟极端敏感的超短对话"
+      }
+    }
+  },
+  {
+    "id": "react-reasoning",
+    "title": "ReAct: Synergizing Reasoning and Acting",
+    "topic": "Reasoning",
+    "source": {
+      "title": "Yao et al., ICLR 2023",
+      "url": "https://arxiv.org/abs/2210.03629"
+    },
+    "cards": {
+      "hook": "把链式思考和工具调用绑在一起，边想边查。",
+      "intuition": "直觉：要么先想完要么先查完；作者：交替推理与行动更稳。",
+      "method": [
+        "提示中示范推理-行动交替",
+        "在中间步骤调用检索或 API",
+        "把观察结果再喂回模型继续推理"
+      ],
+      "tradeoff": {
+        "good": "减少幻觉，任务成功率高",
+        "bad": "推理链更长，延迟和成本上升"
+      },
+      "who": {
+        "do": "需要可解释多步推理的 Agent 场景",
+        "skip": "只需一次响应的简单问答"
+      }
+    }
+  }
+]
