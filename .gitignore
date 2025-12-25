@@ -1,0 +1,10 @@
+node_modules
+dist
+.vite
+.idea
+.DS_Store
+coverage
+test-results
+playwright-report
+.venv
+__pycache__/
