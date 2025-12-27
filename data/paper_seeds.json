@@ -258,5 +258,1305 @@
         "skip": "只需一次响应的简单问答"
       }
     }
+  },
+  {
+    "id": "language-models-are-few-shot",
+    "title": "Language Models are Few-Shot Learners",
+    "topic": "Pretraining",
+    "source": {
+      "title": "Brown et al., NeurIPS 2020",
+      "url": "https://arxiv.org/abs/2005.14165"
+    },
+    "cards": {
+      "hook": "GPT-3 展示大规模预训练即可少样本泛化。",
+      "intuition": "直觉：少样本需要微调；作者：模型足够大时示例提示就能迁移。",
+      "method": [
+        "训练 175B 自回归模型覆盖多域文本",
+        "用 in-context learning 直接给示例",
+        "比较零样本、少样本与微调表现"
+      ],
+      "tradeoff": {
+        "good": "无需任务特定数据即可适配",
+        "bad": "计算和数据成本极高"
+      },
+      "who": {
+        "do": "需要探索提示能力的大模型团队",
+        "skip": "算力紧张、偏好小模型微调"
+      }
+    }
+  },
+  {
+    "id": "palm-pathways",
+    "title": "PaLM: Scaling Language Modeling with Pathways",
+    "topic": "Pretraining",
+    "source": {
+      "title": "Chowdhery et al., 2022",
+      "url": "https://arxiv.org/abs/2204.02311"
+    },
+    "cards": {
+      "hook": "Pathways 框架支撑 540B 多样任务统训。",
+      "intuition": "直觉：大模型需要专用算子；作者：统一硬件、分片与数据流水线能稳住超大规模。",
+      "method": [
+        "使用 Pathways 支持跨 TPU Pod 并行",
+        "多语言高质量语料去重过滤",
+        "评测代码、推理、常识与翻译"
+      ],
+      "tradeoff": {
+        "good": "多任务能力全面提升",
+        "bad": "依赖专用硬件栈与复杂并行"
+      },
+      "who": {
+        "do": "有大规模 TPU 资源的研究团队",
+        "skip": "仅能在通用 GPU 上训练的小团队"
+      }
+    }
+  },
+  {
+    "id": "chinchilla-optimal",
+    "title": "Training Compute-Optimal Large Language Models",
+    "topic": "Scaling",
+    "source": {
+      "title": "Hoffmann et al., 2022",
+      "url": "https://arxiv.org/abs/2203.15556"
+    },
+    "cards": {
+      "hook": "Chinchilla 用数据/参数平衡刷新 scaling law。",
+      "intuition": "直觉：参数越多越好；作者：算力固定时更应加数据、减参数。",
+      "method": [
+        "系统扫描不同参数与 token 配比",
+        "提出 compute-optimal 曲线",
+        "用 70B 参数 + 1.4T token 训练示范"
+      ],
+      "tradeoff": {
+        "good": "同等算力下更高精度",
+        "bad": "需要极大量清洗语料"
+      },
+      "who": {
+        "do": "追求算力效率的预训练团队",
+        "skip": "只能复用固定数据集的场景"
+      }
+    }
+  },
+  {
+    "id": "gopher-scaling",
+    "title": "Scaling Language Models: Methods, Analysis & Insights from Training Gopher",
+    "topic": "Pretraining",
+    "source": {
+      "title": "Rae et al., 2021",
+      "url": "https://arxiv.org/abs/2112.11446"
+    },
+    "cards": {
+      "hook": "Gopher 280B 展示大模型知识与幻觉权衡。",
+      "intuition": "直觉：只要大就行；作者：领域平衡、毒性与事实性都需监控。",
+      "method": [
+        "构建跨学科高质量语料",
+        "详细评估阅读理解、事实问答与毒性",
+        "分析知识覆盖与错误类型"
+      ],
+      "tradeoff": {
+        "good": "知识广覆盖、表现全面",
+        "bad": "对安全性与数据策划要求高"
+      },
+      "who": {
+        "do": "需要通用知识库型模型的团队",
+        "skip": "专注窄域、可用小模型蒸馏的应用"
+      }
+    }
+  },
+  {
+    "id": "opt-175b",
+    "title": "OPT: Open Pre-trained Transformer Language Models",
+    "topic": "Pretraining",
+    "source": {
+      "title": "Zhang et al., 2022",
+      "url": "https://arxiv.org/abs/2205.01068"
+    },
+    "cards": {
+      "hook": "Meta 开源 175B 训练细节与日志。",
+      "intuition": "直觉：商业模型不可复现；作者：透明 release 降低再现门槛。",
+      "method": [
+        "公布数据配方与优化超参",
+        "提供多尺寸检查点",
+        "分享训练失效与恢复流程"
+      ],
+      "tradeoff": {
+        "good": "可复现实验、利于学术",
+        "bad": "许可证限制商业化"
+      },
+      "who": {
+        "do": "需要开源基线的研究者",
+        "skip": "严格商业闭源场景"
+      }
+    }
+  },
+  {
+    "id": "bloom-176b",
+    "title": "BLOOM: A 176B-Parameter Open-Access Multilingual Language Model",
+    "topic": "Pretraining",
+    "source": {
+      "title": "BigScience, 2022",
+      "url": "https://arxiv.org/abs/2211.05100"
+    },
+    "cards": {
+      "hook": "大规模协作训练多语种开源 176B。",
+      "intuition": "直觉：跨语种必丢质量；作者：均衡采样与 tokenizer 改善小语种。",
+      "method": [
+        "分布式训练 46 语言混合语料",
+        "基于 SentencePiece 的多语 tokenizer",
+        "开放治理、评测与责任声明"
+      ],
+      "tradeoff": {
+        "good": "多语能力强且完全开源",
+        "bad": "推理资源需求高"
+      },
+      "who": {
+        "do": "跨语种研究与公益项目",
+        "skip": "仅需英语单语的小规模部署"
+      }
+    }
+  },
+  {
+    "id": "megatron-turing-nlg",
+    "title": "Scaling Language Models: Methods for Training 530B Parameter Models",
+    "topic": "Systems",
+    "source": {
+      "title": "Smith et al., 2022",
+      "url": "https://arxiv.org/abs/2201.11990"
+    },
+    "cards": {
+      "hook": "Megatron-Turing NLG 展示张量并行与流水线极限。",
+      "intuition": "直觉：只要堆卡即可；作者：三维并行与优化器工程同样关键。",
+      "method": [
+        "张量并行 + 流水线并行混合",
+        "ZeRO 优化器分片显存",
+        "稳定超长训练的学习率与正则策略"
+      ],
+      "tradeoff": {
+        "good": "支撑超大参数模型训练",
+        "bad": "实现复杂、通信开销大"
+      },
+      "who": {
+        "do": "需要探索极限规模的系统团队",
+        "skip": "单机或小规模训练"
+      }
+    }
+  },
+  {
+    "id": "llama-1",
+    "title": "LLaMA: Open and Efficient Foundation Language Models",
+    "topic": "Pretraining",
+    "source": {
+      "title": "Touvron et al., 2023",
+      "url": "https://arxiv.org/abs/2302.13971"
+    },
+    "cards": {
+      "hook": "低成本训练出开源高效基座。",
+      "intuition": "直觉：性能必须靠超大参数；作者：高质量数据+优化器也能让小模型对标。",
+      "method": [
+        "7B-65B 尺寸多版本",
+        "大量过滤的英文与多语混合语料",
+        "分组查询注意力减少显存"
+      ],
+      "tradeoff": {
+        "good": "可复现、推理成本低",
+        "bad": "原版许可证限制商用"
+      },
+      "who": {
+        "do": "需要可改造的开源基座",
+        "skip": "必须可直接商用的团队"
+      }
+    }
+  },
+  {
+    "id": "llama-2",
+    "title": "Llama 2: Open Foundation and Fine-Tuned Chat Models",
+    "topic": "Alignment",
+    "source": {
+      "title": "Touvron et al., 2023",
+      "url": "https://arxiv.org/abs/2307.09288"
+    },
+    "cards": {
+      "hook": "开放许可的对话版 LLaMA。",
+      "intuition": "直觉：开源聊天质量难敌闭源；作者：扩充数据与安全微调可媲美主流。",
+      "method": [
+        "优化预训练数据覆盖与长度",
+        "指令微调 + RLHF 提升对齐",
+        "安全过滤与红队测试"
+      ],
+      "tradeoff": {
+        "good": "开源可商用、聊天质量强",
+        "bad": "对多模态和长上下文支持有限"
+      },
+      "who": {
+        "do": "想自托管聊天模型的企业",
+        "skip": "需要原生多模态或超长上下文"
+      }
+    }
+  },
+  {
+    "id": "llama-3",
+    "title": "The Llama 3 Herd of Models",
+    "topic": "Pretraining",
+    "source": {
+      "title": "Meta AI, 2024",
+      "url": "https://ai.meta.com/research/publications/the-llama-3-herd-of-models"
+    },
+    "cards": {
+      "hook": "上下文、工具与安全全面升级的第三代。",
+      "intuition": "直觉：继续堆规模即可；作者：强调数据多样性、长上下文和合规。",
+      "method": [
+        "扩展至 8B/70B 新 tokenizer",
+        "长上下文与函数调用训练混入",
+        "安全 RLHF 与拒答策略迭代"
+      ],
+      "tradeoff": {
+        "good": "开箱即用的工具与长上下文能力",
+        "bad": "模型体积仍偏大、需现代推理栈"
+      },
+      "who": {
+        "do": "想直接接入函数调用的产品团队",
+        "skip": "只容纳极小模型的端侧场景"
+      }
+    }
+  },
+  {
+    "id": "mistral-7b",
+    "title": "Mistral 7B",
+    "topic": "Architecture",
+    "source": {
+      "title": "Jiang et al., 2023",
+      "url": "https://arxiv.org/abs/2310.06825"
+    },
+    "cards": {
+      "hook": "小体积刷新开源 7B 基座表现。",
+      "intuition": "直觉：小模型难对标 13B+；作者：分组注意力与滑动窗口能挖出潜力。",
+      "method": [
+        "组查询注意力 + 滑动窗口",
+        "大批次训练稳定化策略",
+        "长上下文 8K 默认支持"
+      ],
+      "tradeoff": {
+        "good": "推理快、开源友好",
+        "bad": "参数量限制知识覆盖"
+      },
+      "who": {
+        "do": "需要高性价比开源基座的团队",
+        "skip": "要求超大知识容量的应用"
+      }
+    }
+  },
+  {
+    "id": "mixtral-8x7b",
+    "title": "Mixtral of Experts 8x7B",
+    "topic": "Architecture",
+    "source": {
+      "title": "Mistral AI, 2023",
+      "url": "https://arxiv.org/abs/2401.04088"
+    },
+    "cards": {
+      "hook": "开源稀疏 MoE 打出高性价比。",
+      "intuition": "直觉：MoE 训练易崩溃；作者：路由正则和噪声稳定了稀疏激活。",
+      "method": [
+        "8 专家稀疏门控，两专家激活",
+        "平衡路由损失防止塌陷",
+        "保持 32K 上下文能力"
+      ],
+      "tradeoff": {
+        "good": "推理吞吐高、性能接近 dense 大模型",
+        "bad": "部署需支持稀疏路由"
+      },
+      "who": {
+        "do": "算力有限但追求高质量的团队",
+        "skip": "无法修改推理栈支持 MoE 的环境"
+      }
+    }
+  },
+  {
+    "id": "qwen2-72b",
+    "title": "Qwen2: A Family of Open LLMs",
+    "topic": "Pretraining",
+    "source": {
+      "title": "Qwen Team, 2024",
+      "url": "https://arxiv.org/abs/2407.10671"
+    },
+    "cards": {
+      "hook": "中文英文双优的开源系列第二代。",
+      "intuition": "直觉：多语混训会拖慢英文；作者：分段 curriculum 保持两端质量。",
+      "method": [
+        "重构 tokenizer 提升中文效率",
+        "长上下文与工具调用联合训练",
+        "安全与拒答策略迭代"
+      ],
+      "tradeoff": {
+        "good": "中文表现突出、上下文更长",
+        "bad": "体积与推理成本仍高"
+      },
+      "who": {
+        "do": "面向中英双语产品的团队",
+        "skip": "只做英文、希望极小模型的场景"
+      }
+    }
+  },
+  {
+    "id": "deepseek-v2",
+    "title": "DeepSeek-V2: Stronger Reasoning with Mixture-of-Experts",
+    "topic": "Architecture",
+    "source": {
+      "title": "DeepSeek-AI, 2024",
+      "url": "https://arxiv.org/abs/2405.04434"
+    },
+    "cards": {
+      "hook": "国产开源 MoE 展示推理与成本折中。",
+      "intuition": "直觉：MoE 只适合生成；作者：加重推理数据与强化路由能提逻辑。",
+      "method": [
+        "去饱和门控与负载均衡",
+        "强化学习强化推理回答",
+        "公开权重与训练细节"
+      ],
+      "tradeoff": {
+        "good": "推理/成本比优越",
+        "bad": "依赖特殊推理内核"
+      },
+      "who": {
+        "do": "想要高效 MoE 的开源使用者",
+        "skip": "无法调整部署栈的保守环境"
+      }
+    }
+  },
+  {
+    "id": "phi-2",
+    "title": "Phi-2: The Surprising Power of Small Language Models",
+    "topic": "Pretraining",
+    "source": {
+      "title": "Microsoft, 2023",
+      "url": "https://arxiv.org/abs/2310.11417"
+    },
+    "cards": {
+      "hook": "1.3B 体积用合成教材训出强小模型。",
+      "intuition": "直觉：小模型难推理；作者：高质量教案数据能补知识。",
+      "method": [
+        "合成安全、代码、数学教材数据",
+        "严格过滤的网络语料补充",
+        "评测少样本与安全性"
+      ],
+      "tradeoff": {
+        "good": "端侧可用、推理便宜",
+        "bad": "知识广度有限"
+      },
+      "who": {
+        "do": "算力受限或端侧部署",
+        "skip": "需要长文本与丰富知识的任务"
+      }
+    }
+  },
+  {
+    "id": "phi-3",
+    "title": "Phi-3 Technical Report",
+    "topic": "Pretraining",
+    "source": {
+      "title": "Microsoft, 2024",
+      "url": "https://arxiv.org/abs/2404.14219"
+    },
+    "cards": {
+      "hook": "小体积系列扩展到多版本并提升工具能力。",
+      "intuition": "直觉：小模型学不会函数调用；作者：教材式构造和合成日志足以。",
+      "method": [
+        "多尺寸 (Mini/Small/Medium) 统一教案数据",
+        "加入函数调用和多轮对话样本",
+        "对齐安全与拒答策略"
+      ],
+      "tradeoff": {
+        "good": "轻量但具工具与推理能力",
+        "bad": "长上下文仍受限"
+      },
+      "who": {
+        "do": "移动端或边缘侧需要工具调用",
+        "skip": "要一次处理超长文档的场景"
+      }
+    }
+  },
+  {
+    "id": "claude-3",
+    "title": "Claude 3 Model Family",
+    "topic": "Alignment",
+    "source": {
+      "title": "Anthropic, 2024",
+      "url": "https://www.anthropic.com/research/claude-3"
+    },
+    "cards": {
+      "hook": "强调安全、长上下文和多模态的第三代 Claude。",
+      "intuition": "直觉：安全会牺牲能力；作者：配合强大数据与训练可兼顾。",
+      "method": [
+        "200K 以上上下文训练",
+        "视觉与文本联合对齐",
+        "Constitutional AI + 红队迭代"
+      ],
+      "tradeoff": {
+        "good": "长文理解和安全性兼顾",
+        "bad": "闭源、成本高"
+      },
+      "who": {
+        "do": "需要高安全合规的行业应用",
+        "skip": "必须开源或自托管的场景"
+      }
+    }
+  },
+  {
+    "id": "gemini-1-5",
+    "title": "Gemini 1.5: Unlocking Longer Context",
+    "topic": "Pretraining",
+    "source": {
+      "title": "Team Google, 2024",
+      "url": "https://arxiv.org/abs/2403.05530"
+    },
+    "cards": {
+      "hook": "1M 级上下文的多模态模型。",
+      "intuition": "直觉：超长上下文会遗忘前文；作者：分块注意力与检索式位置编码稳住记忆。",
+      "method": [
+        "分块位置编码支持 1M token",
+        "多模态和代码混合训练",
+        "长上下文评测与needle-in-a-haystack 实验"
+      ],
+      "tradeoff": {
+        "good": "超长文档与视频处理能力",
+        "bad": "计算和延迟显著上升"
+      },
+      "who": {
+        "do": "法律、科研等需要超长上下文",
+        "skip": "延迟敏感或资源受限的任务"
+      }
+    }
+  },
+  {
+    "id": "gpt-4-tech-report",
+    "title": "GPT-4 Technical Report",
+    "topic": "Pretraining",
+    "source": {
+      "title": "OpenAI, 2023",
+      "url": "https://arxiv.org/abs/2303.08774"
+    },
+    "cards": {
+      "hook": "GPT-4 显著提升推理和安全，成为通用助手。",
+      "intuition": "直觉：闭源无法借鉴；作者：披露评测、安全与红队经验可供参考。",
+      "method": [
+        "多任务大规模预训练",
+        "对齐管线含 RLHF 与安全过滤",
+        "广泛人类偏好与专业考试评测"
+      ],
+      "tradeoff": {
+        "good": "多域 SOTA、对齐更稳",
+        "bad": "闭源、成本高"
+      },
+      "who": {
+        "do": "评估商用闭源基线",
+        "skip": "完全依赖开源权重的团队"
+      }
+    }
+  },
+  {
+    "id": "instructgpt-rlhf",
+    "title": "Training Language Models to Follow Instructions with Human Feedback",
+    "topic": "Alignment",
+    "source": {
+      "title": "Ouyang et al., 2022",
+      "url": "https://arxiv.org/abs/2203.02155"
+    },
+    "cards": {
+      "hook": "InstructGPT 用 RLHF 让模型听话。",
+      "intuition": "直觉：微调少量指令数据够了；作者：人类偏好奖励能显著提升对齐。",
+      "method": [
+        "收集指令-回复对",
+        "训练奖励模型评估偏好",
+        "PPO 强化学习优化主模型"
+      ],
+      "tradeoff": {
+        "good": "显著降低有害或跑题",
+        "bad": "奖励模型偏差会放大"
+      },
+      "who": {
+        "do": "需要高质量指令遵循",
+        "skip": "无法承担人类标注成本"
+      }
+    }
+  },
+  {
+    "id": "flan-zero-shot",
+    "title": "Finetuned Language Models Are Zero-Shot Learners",
+    "topic": "Alignment",
+    "source": {
+      "title": "Wei et al., ICLR 2022",
+      "url": "https://arxiv.org/abs/2109.01652"
+    },
+    "cards": {
+      "hook": "FLAN 指令微调激活零样本能力。",
+      "intuition": "直觉：指令微调只提升特定任务；作者：覆盖多任务可泛化到新指令。",
+      "method": [
+        "多任务指令格式化数据",
+        "迁移到不同规模模型",
+        "评测零样本与少样本提升"
+      ],
+      "tradeoff": {
+        "good": "无需新标注即可泛化",
+        "bad": "数据策划与格式化成本高"
+      },
+      "who": {
+        "do": "想让基座更听懂指令",
+        "skip": "只做单任务微调"
+      }
+    }
+  },
+  {
+    "id": "flan-t5",
+    "title": "Scaling Instruction-Finetuned Language Models",
+    "topic": "Alignment",
+    "source": {
+      "title": "Chung et al., 2022",
+      "url": "https://arxiv.org/abs/2210.11416"
+    },
+    "cards": {
+      "hook": "FLAN-T5 展示指令微调随规模线性收益。",
+      "intuition": "直觉：指令数据够多即可；作者：规模、数据多样性同样重要。",
+      "method": [
+        "扩展到 T5-XXL 及 PaLM",
+        "混合 1.8K 任务多种模板",
+        "评测多语言与推理任务"
+      ],
+      "tradeoff": {
+        "good": "更强零样本与多语能力",
+        "bad": "数据采集与清洗成本高"
+      },
+      "who": {
+        "do": "大规模指令调优探索",
+        "skip": "资源有限的小模型实验"
+      }
+    }
+  },
+  {
+    "id": "ul2-20b",
+    "title": "UL2: Unifying Language Learning Paradigms",
+    "topic": "Pretraining",
+    "source": {
+      "title": "Tay et al., 2022",
+      "url": "https://arxiv.org/abs/2205.05131"
+    },
+    "cards": {
+      "hook": "UL2 用多目标统一掩码与自回归。",
+      "intuition": "直觉：单一目标即可；作者：混合 NLU/NLG 目标更稳健。",
+      "method": [
+        "R-DROP 目标混合三种掩码模式",
+        "长文本 span corruption",
+        "公开 20B 检查点"
+      ],
+      "tradeoff": {
+        "good": "零样本泛化与鲁棒性提升",
+        "bad": "训练管线复杂、需仔细配比"
+      },
+      "who": {
+        "do": "想同时覆盖理解与生成的团队",
+        "skip": "只需纯自回归生成"
+      }
+    }
+  },
+  {
+    "id": "t5-text-to-text",
+    "title": "Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer",
+    "topic": "Architecture",
+    "source": {
+      "title": "Raffel et al., JMLR 2020",
+      "url": "https://arxiv.org/abs/1910.10683"
+    },
+    "cards": {
+      "hook": "T5 把一切 NLP 任务转成文本到文本。",
+      "intuition": "直觉：分类/生成需不同头；作者：统一文本接口简化迁移。",
+      "method": [
+        "大规模 C4 语料预训练",
+        "span corruption 自监督目标",
+        "评测广泛 GLUE/SuperGLUE/翻译"
+      ],
+      "tradeoff": {
+        "good": "统一接口、迁移简单",
+        "bad": "预训练成本高、需要大语料"
+      },
+      "who": {
+        "do": "需要多任务统一建模",
+        "skip": "只做单一生成任务"
+      }
+    }
+  },
+  {
+    "id": "switch-transformer",
+    "title": "Switch Transformers: Scaling to Trillion Parameter Models with Simple and Efficient Sparsity",
+    "topic": "Architecture",
+    "source": {
+      "title": "Fedus et al., 2021",
+      "url": "https://arxiv.org/abs/2101.03961"
+    },
+    "cards": {
+      "hook": "单路由 MoE 把参数推到万亿级。",
+      "intuition": "直觉：MoE 路由复杂难训；作者：单专家路由简化训练稳定性。",
+      "method": [
+        "每个 token 激活 1 个专家",
+        "容量因子与drop 路由正则",
+        "在多任务上验证稀疏收益"
+      ],
+      "tradeoff": {
+        "good": "参数量大但计算成本低",
+        "bad": "路由不均会影响质量"
+      },
+      "who": {
+        "do": "探索稀疏扩展的团队",
+        "skip": "部署环境不支持路由逻辑"
+      }
+    }
+  },
+  {
+    "id": "gshard-moe",
+    "title": "GShard: Scaling Giant Models with Conditional Computation and Automatic Sharding",
+    "topic": "Systems",
+    "source": {
+      "title": "Lepikhin et al., 2020",
+      "url": "https://arxiv.org/abs/2006.16668"
+    },
+    "cards": {
+      "hook": "GShard 自动分片 + MoE 驱动百亿模型早期突破。",
+      "intuition": "直觉：分片要手工调；作者：自动 sharding 和路由训练能简化工程。",
+      "method": [
+        "自动设备映射与并行划分",
+        "稀疏门控专家网络",
+        "在翻译与语言任务上验证"
+      ],
+      "tradeoff": {
+        "good": "降低超大模型工程门槛",
+        "bad": "需要支持 XLA/TPU 堆栈"
+      },
+      "who": {
+        "do": "想快速实验 MoE 的研究者",
+        "skip": "仅有通用 GPU 的团队"
+      }
+    }
+  },
+  {
+    "id": "prefix-tuning",
+    "title": "Prefix-Tuning: Optimizing Continuous Prompts for Generation",
+    "topic": "Training",
+    "source": {
+      "title": "Li & Liang, ACL 2021",
+      "url": "https://arxiv.org/abs/2101.00190"
+    },
+    "cards": {
+      "hook": "冻结主模型，仅训练前缀向量即可定制生成。",
+      "intuition": "直觉：必须调全参或层适配器；作者：小前缀即可重定模型行为。",
+      "method": [
+        "在注意力层前加可训练前缀键值",
+        "目标任务上微调前缀",
+        "对比全参和提示方法"
+      ],
+      "tradeoff": {
+        "good": "参数量极小、易切换任务",
+        "bad": "能力受限于前缀长度"
+      },
+      "who": {
+        "do": "多任务低资源场景",
+        "skip": "需要大幅修改模型知识的应用"
+      }
+    }
+  },
+  {
+    "id": "p-tuning-v2",
+    "title": "P-Tuning v2: Prompt Tuning Can Be Comparable to Fine-tuning Universally Across Scales and Tasks",
+    "topic": "Training",
+    "source": {
+      "title": "Liu et al., 2022",
+      "url": "https://arxiv.org/abs/2110.07602"
+    },
+    "cards": {
+      "hook": "Deep Prompt 堆叠让提示微调更通用。",
+      "intuition": "直觉：prompt tuning 只适合小模型；作者：深层可训练 prompt 可对标全参。",
+      "method": [
+        "在多层 Transformer 插入可训练提示",
+        "支持 seq2seq 和 decoder-only",
+        "广泛 GLUE、SuperGLUE 评测"
+      ],
+      "tradeoff": {
+        "good": "少参数但效果强",
+        "bad": "实现复杂、训练不当易梯度不稳"
+      },
+      "who": {
+        "do": "想降低显存占用的微调",
+        "skip": "对实现复杂度敏感的团队"
+      }
+    }
+  },
+  {
+    "id": "prompt-tuning",
+    "title": "The Power of Scale for Parameter-Efficient Prompt Tuning",
+    "topic": "Training",
+    "source": {
+      "title": "Lester et al., 2021",
+      "url": "https://arxiv.org/abs/2104.08691"
+    },
+    "cards": {
+      "hook": "只训练软 prompt，模型越大效果越好。",
+      "intuition": "直觉：软 prompt 只能小幅提升；作者：大模型时能匹敌全参微调。",
+      "method": [
+        "为每个任务训练可学习嵌入序列",
+        "冻结 backbone 参数",
+        "跨 3B-10B 模型比较"
+      ],
+      "tradeoff": {
+        "good": "参数极少、易维护多任务",
+        "bad": "小模型效果有限"
+      },
+      "who": {
+        "do": "多任务共享底座的场景",
+        "skip": "只有小模型或需大幅修改知识"
+      }
+    }
+  },
+  {
+    "id": "self-instruct",
+    "title": "Self-Instruct: Aligning Language Models with Self-Generated Instructions",
+    "topic": "Alignment",
+    "source": {
+      "title": "Wang et al., 2022",
+      "url": "https://arxiv.org/abs/2212.10560"
+    },
+    "cards": {
+      "hook": "让模型自造指令再微调，降低人工成本。",
+      "intuition": "直觉：指令数据必须人工写；作者：模型可迭代扩充多样指令。",
+      "method": [
+        "人工 seed 指令小集合",
+        "模型生成新指令与回答",
+        "去重过滤后监督微调"
+      ],
+      "tradeoff": {
+        "good": "成本低、指令多样",
+        "bad": "生成噪声需谨慎过滤"
+      },
+      "who": {
+        "do": "低预算扩展指令数据",
+        "skip": "对数据纯净度极度敏感"
+      }
+    }
+  },
+  {
+    "id": "alpaca-52k",
+    "title": "Alpaca: A Strong, Replicable Instruction-Following Model",
+    "topic": "Alignment",
+    "source": {
+      "title": "Stanford CRFM, 2023",
+      "url": "https://crfm.stanford.edu/2023/03/13/alpaca.html"
+    },
+    "cards": {
+      "hook": "用 Self-Instruct 生成 52K 数据微调 LLaMA。",
+      "intuition": "直觉：指令微调必须大模型；作者：7B 也能在高质量数据下表现好。",
+      "method": [
+        "用 text-davinci-003 生成指令样本",
+        "在 LLaMA-7B 上监督微调",
+        "公开数据与训练脚本"
+      ],
+      "tradeoff": {
+        "good": "低成本复现对话模型",
+        "bad": "许可证限制与数据噪声"
+      },
+      "who": {
+        "do": "教学和研究复现",
+        "skip": "需要商业许可或高安全性"
+      }
+    }
+  },
+  {
+    "id": "vicuna-13b",
+    "title": "Vicuna: An Open-Source Chatbot Impressing GPT-4",
+    "topic": "Alignment",
+    "source": {
+      "title": "UC Berkeley et al., 2023",
+      "url": "https://lmsys.org/blog/2023-03-30-vicuna/"
+    },
+    "cards": {
+      "hook": "用 ShareGPT 对话数据微调出的强开源助手。",
+      "intuition": "直觉：只靠网络对话会过拟合口水；作者：精选高质量聊天即可显著提升。",
+      "method": [
+        "收集清洗 ShareGPT 对话",
+        "在 LLaMA 上监督微调",
+        "公开评测与演示"
+      ],
+      "tradeoff": {
+        "good": "社区可快速复刻",
+        "bad": "数据版权与安全风险"
+      },
+      "who": {
+        "do": "开源聊天模型孵化",
+        "skip": "需要严格合规数据的企业"
+      }
+    }
+  },
+  {
+    "id": "lima-minimal-examples",
+    "title": "LIMA: Less Is More for Alignment",
+    "topic": "Alignment",
+    "source": {
+      "title": "Zhou et al., 2023",
+      "url": "https://arxiv.org/abs/2305.11206"
+    },
+    "cards": {
+      "hook": "1K 精选样本就能对齐大模型。",
+      "intuition": "直觉：需要大量指令数据；作者：质量和多样性比数量更重要。",
+      "method": [
+        "人工精挑 1K 多样对话",
+        "最小监督微调即可显著提升",
+        "分析模型本身已具备大部分知识"
+      ],
+      "tradeoff": {
+        "good": "标注成本极低",
+        "bad": "覆盖面仍受限、易形成风格偏差"
+      },
+      "who": {
+        "do": "小团队快速对齐",
+        "skip": "需要全面安全审计的大规模产品"
+      }
+    }
+  },
+  {
+    "id": "dolly-v2",
+    "title": "Dolly 2.0: Instruction-Following Model Licensed for Commercial Use",
+    "topic": "Alignment",
+    "source": {
+      "title": "Databricks, 2023",
+      "url": "https://www.databricks.com/blog/2023/04/12/dolly-v2-open-source-commercially-usable-instruction-tuned-llm.html"
+    },
+    "cards": {
+      "hook": "商业可用许可证的开源指令模型。",
+      "intuition": "直觉：开源对话不可商用；作者：自建标注数据可解决版权。",
+      "method": [
+        "Databricks 员工标注 15K 指令",
+        "在开源基座上微调",
+        "发布权重与商用许可"
+      ],
+      "tradeoff": {
+        "good": "合规友好、易商用",
+        "bad": "数据规模较小、质量参差"
+      },
+      "who": {
+        "do": "想快速获得商用许可模型",
+        "skip": "追求最高对话质量的团队"
+      }
+    }
+  },
+  {
+    "id": "baichuan2",
+    "title": "Baichuan 2: Open Large-scale Pretrained Models",
+    "topic": "Pretraining",
+    "source": {
+      "title": "Baichuan AI, 2023",
+      "url": "https://arxiv.org/abs/2309.10305"
+    },
+    "cards": {
+      "hook": "中文友好的第二代百川开源模型。",
+      "intuition": "直觉：中文开源模型落后；作者：扩充语料与优化 tokenizer 可追上。",
+      "method": [
+        "中英混合高质量语料",
+        "长上下文与代码混入训练",
+        "对齐与安全加固"
+      ],
+      "tradeoff": {
+        "good": "中文表现强、开源许可宽",
+        "bad": "多模态与超长上下文尚缺"
+      },
+      "who": {
+        "do": "中文场景自托管",
+        "skip": "需要原生多模态或闭源服务"
+      }
+    }
+  },
+  {
+    "id": "qwen-vl",
+    "title": "Qwen-VL: A Versatile Vision-Language Model for Understanding, Localization, Text Reading, and Beyond",
+    "topic": "Multimodal",
+    "source": {
+      "title": "Bai et al., 2023",
+      "url": "https://arxiv.org/abs/2308.12966"
+    },
+    "cards": {
+      "hook": "通用中文多模态理解与 OCR 能力。",
+      "intuition": "直觉：多模态会削弱文本；作者：分级训练与高分辨率 patch 保持能力。",
+      "method": [
+        "视觉编码器接入 LLM 解码",
+        "分阶段图文指令微调",
+        "覆盖定位、阅读、推理数据"
+      ],
+      "tradeoff": {
+        "good": "视觉任务广、中文强",
+        "bad": "推理显存需求高"
+      },
+      "who": {
+        "do": "需要图文理解的应用",
+        "skip": "纯文本或无 GPU 推理环境"
+      }
+    }
+  },
+  {
+    "id": "toolformer",
+    "title": "Toolformer: Language Models Can Teach Themselves to Use Tools",
+    "topic": "Tools",
+    "source": {
+      "title": "Schick et al., 2023",
+      "url": "https://arxiv.org/abs/2302.04761"
+    },
+    "cards": {
+      "hook": "模型自学 API 调用，自动添加工具使用示例。",
+      "intuition": "直觉：需要人工示例教工具；作者：模型可自标注 API 调用并过滤。",
+      "method": [
+        "让模型在文本中尝试插入 API 调用",
+        "用结果质量过滤有效示例",
+        "再微调模型掌握工具"
+      ],
+      "tradeoff": {
+        "good": "减少人工设计成本",
+        "bad": "需现成可调用 API 且过滤复杂"
+      },
+      "who": {
+        "do": "想批量赋能工具调用的团队",
+        "skip": "API 稳定性或安全性受限的场景"
+      }
+    }
+  },
+  {
+    "id": "code-llama",
+    "title": "Code Llama: Open Foundation Models for Code",
+    "topic": "Code",
+    "source": {
+      "title": "Rozière et al., 2023",
+      "url": "https://arxiv.org/abs/2308.12950"
+    },
+    "cards": {
+      "hook": "针对代码生成和填充优化的 LLaMA 变体。",
+      "intuition": "直觉：通用模型就能写码；作者：专门代码语料和填空目标显著提升。",
+      "method": [
+        "大规模代码与注释混合训练",
+        "支持 fill-in-the-middle 目标",
+        "多语言编程评测"
+      ],
+      "tradeoff": {
+        "good": "开源、代码任务表现佳",
+        "bad": "自然语言对话能力相对弱"
+      },
+      "who": {
+        "do": "需要自托管代码助手",
+        "skip": "更关注通用对话的产品"
+      }
+    }
+  },
+  {
+    "id": "starcoder",
+    "title": "StarCoder: may the source be with you!",
+    "topic": "Code",
+    "source": {
+      "title": "Li et al., 2023",
+      "url": "https://arxiv.org/abs/2305.06161"
+    },
+    "cards": {
+      "hook": "开源 15B 代码模型，强调许可证合规。",
+      "intuition": "直觉：开源代码数据风险大；作者：许可过滤 + 注释预训练可兼顾。",
+      "method": [
+        "BigCode 许可过滤语料",
+        "填空式训练提升编辑能力",
+        "多语言基准评测"
+      ],
+      "tradeoff": {
+        "good": "可商用、代码性能强",
+        "bad": "通用对话与长上下文较弱"
+      },
+      "who": {
+        "do": "企业合规代码生成",
+        "skip": "需要顶级通用语言能力的场景"
+      }
+    }
+  },
+  {
+    "id": "wizardlm",
+    "title": "WizardLM: Empowering Large Language Models to Follow Complex Instructions",
+    "topic": "Alignment",
+    "source": {
+      "title": "Xu et al., 2023",
+      "url": "https://arxiv.org/abs/2304.12244"
+    },
+    "cards": {
+      "hook": "演绎式进阶指令让模型学会复杂任务。",
+      "intuition": "直觉：指令难度随意排；作者：递增复杂度能提升推理与规划。",
+      "method": [
+        "使用 Evol-Instruct 生成进阶指令",
+        "在 LLaMA 上监督微调",
+        "评测复杂推理与工具使用"
+      ],
+      "tradeoff": {
+        "good": "复杂指令遵循更稳",
+        "bad": "自动生成指令可能含噪"
+      },
+      "who": {
+        "do": "提升助手复杂任务能力",
+        "skip": "只需闲聊或简单问答"
+      }
+    }
+  },
+  {
+    "id": "qlora-4bit",
+    "title": "QLoRA: Efficient Finetuning of Quantized LLMs",
+    "topic": "Training",
+    "source": {
+      "title": "Dettmers et al., 2023",
+      "url": "https://arxiv.org/abs/2305.14314"
+    },
+    "cards": {
+      "hook": "4-bit 量化 + LoRA，让消费级卡就能训大模型。",
+      "intuition": "直觉：量化会毁训练；作者：双量化与冻结主权重仍可高质量微调。",
+      "method": [
+        "NF4 量化权重、double quant 降显存",
+        "在量化权重上插 LoRA 适配器",
+        "多基座上验证性能"
+      ],
+      "tradeoff": {
+        "good": "显存需求大幅下降",
+        "bad": "训练数值稳定性敏感"
+      },
+      "who": {
+        "do": "消费级或云成本敏感微调",
+        "skip": "追求最高精度且算力充足"
+      }
+    }
+  },
+  {
+    "id": "chain-of-thought",
+    "title": "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models",
+    "topic": "Prompting",
+    "source": {
+      "title": "Wei et al., 2022",
+      "url": "https://arxiv.org/abs/2201.11903"
+    },
+    "cards": {
+      "hook": "简单示范逐步推理即可提升复杂任务表现。",
+      "intuition": "直觉：提示应简短直接；作者：展示推理链让模型学会拆解。",
+      "method": [
+        "在提示中加入手工推理步骤",
+        "少样本示例覆盖数学/逻辑",
+        "评测大模型在 reasoning 基准"
+      ],
+      "tradeoff": {
+        "good": "无需修改模型即可提推理",
+        "bad": "输出更长、延迟增加"
+      },
+      "who": {
+        "do": "需要可解释推理答案",
+        "skip": "极度延迟敏感的问答"
+      }
+    }
+  },
+  {
+    "id": "self-consistency",
+    "title": "Self-Consistency Improves Chain of Thought Reasoning in Language Models",
+    "topic": "Prompting",
+    "source": {
+      "title": "Wang et al., 2022",
+      "url": "https://arxiv.org/abs/2203.11171"
+    },
+    "cards": {
+      "hook": "多样化采样推理链，再投票提升准确率。",
+      "intuition": "直觉：一次推理即可；作者：聚合多条链能抵抗随机错误。",
+      "method": [
+        "对同一问题采样多条 CoT",
+        "汇总答案取众数或加权",
+        "在算数、逻辑任务评测"
+      ],
+      "tradeoff": {
+        "good": "推理准确率显著提升",
+        "bad": "计算成本成倍增加"
+      },
+      "who": {
+        "do": "追求高精度离线推理",
+        "skip": "实时互动或成本敏感"
+      }
+    }
+  },
+  {
+    "id": "tree-of-thoughts",
+    "title": "Tree of Thoughts: Deliberate Problem Solving with Large Language Models",
+    "topic": "Reasoning",
+    "source": {
+      "title": "Yao et al., 2023",
+      "url": "https://arxiv.org/abs/2305.10601"
+    },
+    "cards": {
+      "hook": "把推理扩展成树状搜索，显著提升规划。",
+      "intuition": "直觉：线性思考足够；作者：分支探索与回溯更稳。",
+      "method": [
+        "生成多个思路分支",
+        "设定评分函数剪枝",
+        "迭代扩展直到找到高分路径"
+      ],
+      "tradeoff": {
+        "good": "复杂规划成功率高",
+        "bad": "计算量和延迟大幅提升"
+      },
+      "who": {
+        "do": "离线优化、解谜类任务",
+        "skip": "简单问答或实时对话"
+      }
+    }
+  },
+  {
+    "id": "longformer",
+    "title": "Longformer: The Long-Document Transformer",
+    "topic": "Architecture",
+    "source": {
+      "title": "Beltagy et al., 2020",
+      "url": "https://arxiv.org/abs/2004.05150"
+    },
+    "cards": {
+      "hook": "稀疏滑动注意力让 Transformer 处理长文档。",
+      "intuition": "直觉：全局注意力不可避免；作者：局部+少量全局即可覆盖信息。",
+      "method": [
+        "滑动窗口稀疏注意力",
+        "为关键 token 设全局注意力位",
+        "在长文档 QA/摘要上评测"
+      ],
+      "tradeoff": {
+        "good": "复杂度线性、可长序列",
+        "bad": "可能遗漏跨段依赖"
+      },
+      "who": {
+        "do": "长文档理解、法律科研",
+        "skip": "短文本或需要精准全局交互"
+      }
+    }
+  },
+  {
+    "id": "retro-retrieval",
+    "title": "Retrieval-Enhanced Transformer",
+    "topic": "Retrieval",
+    "source": {
+      "title": "Borgeaud et al., 2022",
+      "url": "https://arxiv.org/abs/2112.04426"
+    },
+    "cards": {
+      "hook": "预训练时就把检索融入模型架构。",
+      "intuition": "直觉：检索只需推理时加；作者：训练期结合检索能学会用外部记忆。",
+      "method": [
+        "建立离线向量索引",
+        "每个 block 拼接检索片段",
+        "评测困惑度与知识问答"
+      ],
+      "tradeoff": {
+        "good": "减少参数需求、提升事实性",
+        "bad": "依赖索引质量和存储成本"
+      },
+      "who": {
+        "do": "知识密集且数据常更新的场景",
+        "skip": "无法维护外部索引的部署"
+      }
+    }
+  },
+  {
+    "id": "atlas-retrieval",
+    "title": "Atlas: Few-shot Learning with Retrieval",
+    "topic": "Retrieval",
+    "source": {
+      "title": "Izacard et al., 2022",
+      "url": "https://arxiv.org/abs/2112.09118"
+    },
+    "cards": {
+      "hook": "把检索融入少样本学习，显著提升事实问答。",
+      "intuition": "直觉：few-shot 只靠上下文示例；作者：加入文档检索能提供真实知识。",
+      "method": [
+        "Dual-Encoder 构建检索索引",
+        "生成器接收问题+检索文本",
+        "在问答和知识密集任务评测"
+      ],
+      "tradeoff": {
+        "good": "事实性提升大",
+        "bad": "需要维护大规模索引"
+      },
+      "who": {
+        "do": "开放域问答和搜索助手",
+        "skip": "无网络或离线极小部署"
+      }
+    }
+  },
+  {
+    "id": "llama-adapter",
+    "title": "LLaMA-Adapter: Efficient Fine-tuning of Language Models with Zero-init Attention",
+    "topic": "Training",
+    "source": {
+      "title": "Zhang et al., 2023",
+      "url": "https://arxiv.org/abs/2303.16199"
+    },
+    "cards": {
+      "hook": "零初始化注意力插槽实现快速参数高效微调。",
+      "intuition": "直觉：LoRA 已足够；作者：在注意力添加小插槽能更好适配新任务。",
+      "method": [
+        "冻结原权重，加入零初始化注意力适配器",
+        "支持文本与视觉输入",
+        "只训练少量新参数"
+      ],
+      "tradeoff": {
+        "good": "训练稳定、参数更少",
+        "bad": "需要改动模型实现"
+      },
+      "who": {
+        "do": "想在 LLaMA 上做多模态或新任务",
+        "skip": "无法改模型图的部署"
+      }
+    }
+  },
+  {
+    "id": "longlora",
+    "title": "LongLoRA: Efficient Fine-tuning of Long-Context Large Language Models",
+    "topic": "Training",
+    "source": {
+      "title": "Chen et al., 2023",
+      "url": "https://arxiv.org/abs/2309.12307"
+    },
+    "cards": {
+      "hook": "用稀疏注意力和 LoRA 让长上下文微调可负担。",
+      "intuition": "直觉：扩展上下文需要全参再训；作者：局部全局混合注意力 + LoRA 即可。",
+      "method": [
+        "窗口化注意力减少显存",
+        "在长序列上插入 LoRA 适配",
+        "开放长上下文数据配方"
+      ],
+      "tradeoff": {
+        "good": "成本可控地获得长上下文",
+        "bad": "极端长序列仍受限"
+      },
+      "who": {
+        "do": "想把基座扩展到 32K+",
+        "skip": "只处理短文本任务"
+      }
+    }
+  },
+  {
+    "id": "streaming-llm",
+    "title": "StreamingLLM: Empowering Large Language Models with Continuous Input Streams",
+    "topic": "Inference",
+    "source": {
+      "title": "Xiao et al., 2023",
+      "url": "https://arxiv.org/abs/2309.17453"
+    },
+    "cards": {
+      "hook": "滑动缓存让模型按流式输入处理无限上下文。",
+      "intuition": "直觉：KV 缓存必须完整保留；作者：丢弃远端 token 仍可维持质量。",
+      "method": [
+        "提出流式 KV 退火策略",
+        "维持少量最近窗口缓存",
+        "在长对话与转录任务评测"
+      ],
+      "tradeoff": {
+        "good": "显存稳定、支持长流式",
+        "bad": "极远依赖可能遗失"
+      },
+      "who": {
+        "do": "实时语音转写、聊天流",
+        "skip": "要求精确保留全局上下文的任务"
+      }
+    }
   }
 ]
