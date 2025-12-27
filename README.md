@@ -38,3 +38,15 @@ curl http://localhost:8000/papers
 
 - 开发模式：`./scripts/dev.sh` 会装好依赖并同时拉起 `uvicorn --reload` 与前端 `vite dev`。
 - 部署验证：`./scripts/deploy.sh` 会执行 `npm ci && npm run build` 后分别启动后端（多进程）与前端 `vite preview` 服务。按 `Ctrl+C` 即可退出并清理进程。
+
+## GitHub Pages 纯前端部署
+
+- 本仓库已内置 GitHub Actions 工作流，会在 `main` 分支推送或手动触发时运行 ESLint、Vitest，并经 `npm run build:github-pages` 生成静态站点后自动发布到 GitHub Pages。
+- Vite 的 GitHub Pages 构建会自动根据仓库名设定 `base` 前缀（缺省为 `/paper/`），确保静态资源路径正确。
+- 本地验证与产出 GitHub Pages 版本：
+
+```bash
+npm run build:github-pages
+```
+
+构建结果位于 `dist/`，可直接发布到 GitHub Pages。
