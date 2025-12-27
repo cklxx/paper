@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { samplePapers } from "./papers";
+import seedPapers from "../../data/paper_seeds.json";
+import { VARIANTS_PER_SEED, samplePapers } from "./papers";
 
 describe("samplePapers", () => {
-  it("contains 100 demo papers", () => {
-    expect(samplePapers).toHaveLength(100);
+  it("expands every seed into demo papers", () => {
+    const expectedLength = (seedPapers as unknown[]).length * VARIANTS_PER_SEED;
+    expect(samplePapers).toHaveLength(expectedLength);
   });
 
   it("contains five cards per paper", () => {

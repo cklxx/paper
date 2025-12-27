@@ -36,7 +36,7 @@ type SeedPaper = {
 
 import seeds from "../../data/paper_seeds.json";
 
-const VARIANTS_PER_SEED = 10;
+export const VARIANTS_PER_SEED = 10;
 
 const variantText = (text: string, variantIndex: number) =>
   variantIndex === 0 ? text : `${text}（案例 ${variantIndex + 1}）`;
