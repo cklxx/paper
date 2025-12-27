@@ -31,7 +31,7 @@ curl http://localhost:8000/papers
 
 ### 数据与爬虫
 
-- 示例数据来自 `data/paper_seeds.json`，经变体展开得到 600 篇带来源标注的示例论文。
+- 示例数据来自 `data/paper_seeds.json`，经变体展开得到 650 篇带来源标注的示例论文。
 - FastAPI 暴露了 `/crawl` 接口：`POST /crawl {"url": "...", "topic": "..."}` 会抓取网页正文，自动转写成 5 张卡片并写入本地 SQLite（默认 `backend/papers.db`，可通过 `PAPER_DB_PATH` 覆盖）。
 
 ### 一键脚本
