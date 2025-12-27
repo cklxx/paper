@@ -1558,5 +1558,135 @@
         "skip": "要求精确保留全局上下文的任务"
       }
     }
+  },
+  {
+    "id": "graph-rag",
+    "title": "GraphRAG: Text-to-Graph Retrieval-Augmented Generation",
+    "topic": "Retrieval",
+    "source": {
+      "title": "Microsoft Research, 2024",
+      "url": "https://arxiv.org/abs/2404.07143"
+    },
+    "cards": {
+      "hook": "把非结构化文档转成图，再按图走路检索。",
+      "intuition": "直觉：文档向量检索足够；作者：图结构能捕捉实体关系提高召回。",
+      "method": [
+        "先抽取实体/关系构建知识图谱",
+        "按查询在图上游走取回相关子图",
+        "结合原文片段与子图上下文生成回答"
+      ],
+      "tradeoff": {
+        "good": "复杂查询召回更准，可解释性高",
+        "bad": "图谱构建成本高，更新需重跑抽取"
+      },
+      "who": {
+        "do": "企业知识库、需要关系追踪的问答",
+        "skip": "只需简单关键词匹配的轻量场景"
+      }
+    }
+  },
+  {
+    "id": "jamba-hybrid",
+    "title": "Jamba: A Hybrid Transformer-Mamba Language Model",
+    "topic": "Architecture",
+    "source": {
+      "title": "Lieber et al., 2024",
+      "url": "https://arxiv.org/abs/2403.19887"
+    },
+    "cards": {
+      "hook": "把 Mamba 状态空间和 Transformer 混编，既长效又并行。",
+      "intuition": "直觉：混合架构不好训练；作者：交错 block 和 MoE 保持稳定。",
+      "method": [
+        "Transformer 与 Mamba block 交替堆叠",
+        "关键位置插入 MoE 提升容量",
+        "长上下文训练并测试 256K token 能力"
+      ],
+      "tradeoff": {
+        "good": "上下文更长、推理吞吐高",
+        "bad": "实现复杂，需自定义 kernel 支持"
+      },
+      "who": {
+        "do": "想兼顾长上下文与高吞吐的团队",
+        "skip": "只需纯 Transformer 兼容性的保守部署"
+      }
+    }
+  },
+  {
+    "id": "sparse-autoencoders",
+    "title": "Scaling Monosemantic Features with Sparse Autoencoders",
+    "topic": "Safety",
+    "source": {
+      "title": "Anthropic, 2024",
+      "url": "https://transformer-circuits.pub/2024/monosemantic-features"
+    },
+    "cards": {
+      "hook": "用稀疏自编码器把神经元解耦成可解释特征。",
+      "intuition": "直觉：特征必然混叠；作者：稀疏约束可逼出单一语义单元。",
+      "method": [
+        "在中间层训练稀疏自编码器",
+        "调节稀疏系数获取单语义特征",
+        "人工检查并用特征开关控制输出"
+      ],
+      "tradeoff": {
+        "good": "解释性强，可对特定概念做安全干预",
+        "bad": "训练额外模型成本高，跨层迁移有限"
+      },
+      "who": {
+        "do": "模型可解释与安全干预团队",
+        "skip": "只关心指标、不做可解释性的场景"
+      }
+    }
+  },
+  {
+    "id": "agentbench",
+    "title": "AgentBench: Evaluating LLMs as Agents",
+    "topic": "Evaluation",
+    "source": {
+      "title": "Liu et al., 2024",
+      "url": "https://arxiv.org/abs/2308.03688"
+    },
+    "cards": {
+      "hook": "专门评测模型当 Agent 时的执行力。",
+      "intuition": "直觉：通用 NLP 基准够用；作者：需要真实环境任务检验策略。",
+      "method": [
+        "设计覆盖工具、网页、数据库的多环境任务",
+        "统一接口驱动模型与环境交互",
+        "按成功率和效率综合评分"
+      ],
+      "tradeoff": {
+        "good": "更贴近真实 Agent 应用",
+        "bad": "搭建环境复杂、评测成本高"
+      },
+      "who": {
+        "do": "研发多工具 Agent 的团队",
+        "skip": "只做纯文本对话的场景"
+      }
+    }
+  },
+  {
+    "id": "promptbreeder",
+    "title": "PromptBreeder: Self-Referential Self-Improvement via Prompt Evolution",
+    "topic": "Prompting",
+    "source": {
+      "title": "Fernando et al., NeurIPS 2023",
+      "url": "https://arxiv.org/abs/2309.16797"
+    },
+    "cards": {
+      "hook": "让模型自己迭代进化提示，越用越强。",
+      "intuition": "直觉：提示需要人工手调；作者：用遗传算法让模型自评选优。",
+      "method": [
+        "初始化一批提示种子",
+        "用模型生成变异并自评效果",
+        "筛选高分提示循环迭代"
+      ],
+      "tradeoff": {
+        "good": "自动找到任务匹配提示",
+        "bad": "评估循环成本高，易陷局部最优"
+      },
+      "who": {
+        "do": "需要批量优化提示模板的团队",
+        "skip": "只需少量手写提示的简单任务"
+      }
+    }
   }
 ]

@@ -3,10 +3,20 @@ import type { TouchEvent } from "react";
 import { CardView } from "./components/CardView";
 import { ProgressDots } from "./components/ProgressDots";
 import { samplePapers } from "./data/papers";
+import {
+  ACTIVE_USER_ID,
+  collaborativeFeedback,
+  rankPapersForUser,
+} from "./data/recommendations";
 
 const CARDS_PER_PAPER = 5;
+const rankedPapers = rankPapersForUser(
+  samplePapers,
+  collaborativeFeedback,
+  ACTIVE_USER_ID,
+);
 
-function useSwipeState() {
+function useSwipeState(totalPapers: number) {
   const [paperIndex, setPaperIndex] = useState(0);
   const [cardIndex, setCardIndex] = useState(0);
   const swipeStartY = useRef<number | null>(null);
@@ -17,7 +27,7 @@ function useSwipeState() {
       if (next < CARDS_PER_PAPER) {
         return next;
       }
-      setPaperIndex((paper) => (paper + 1) % samplePapers.length);
+      setPaperIndex((paper) => (paper + 1) % totalPapers);
       return 0;
     });
   }, []);
@@ -27,7 +37,7 @@ function useSwipeState() {
   }, []);
 
   const nextPaper = () => {
-    setPaperIndex((current) => (current + 1) % samplePapers.length);
+    setPaperIndex((current) => (current + 1) % totalPapers);
     setCardIndex(0);
   };
 
@@ -68,7 +78,7 @@ export default function App() {
   const { paperIndex, cardIndex, handleTouchEnd, handleTouchStart } = useSwipeState();
   const paper = samplePapers[paperIndex];
 
-  const card = useMemo(() => paper.cards[cardIndex], [cardIndex, paper.cards]);
+  const card = useMemo(() => paper.cards[cardIndex], [cardIndex, paper]);
 
   return (
     <main className="app">
