@@ -1,4 +1,4 @@
-import type { Card } from "../data/papers";
+import type { Card } from "../data/types";
 
 type CardViewProps = {
   card: Card;
