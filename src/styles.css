@@ -28,11 +28,13 @@ body {
   display: grid;
   align-items: center;
   justify-content: center;
+  gap: 12px;
   border-radius: 28px;
   padding: 20px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.06);
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+  touch-action: pan-y;
 }
 
 .card {
@@ -119,6 +121,24 @@ ol {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+}
+
+.progress-dots {
+  display: inline-flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 4px 8px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.dot.active {
+  background: #c7d2fe;
 }
 
 

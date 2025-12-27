@@ -1,40 +1,5 @@
-export type Card =
-  | { type: "hook"; text: string }
-  | { type: "intuition"; text: string }
-  | { type: "method"; steps: string[] }
-  | { type: "tradeoff"; good: string; bad: string }
-  | { type: "who"; do: string; skip: string };
-
-export type Source = {
-  title: string;
-  url: string;
-};
-
-export type Paper = {
-  id: string;
-  title: string;
-  topic: string;
-  source: Source;
-  cards: Card[];
-};
-
-type SeedCardFields = {
-  hook: string;
-  intuition: string;
-  method: string[];
-  tradeoff: { good: string; bad: string };
-  who: { do: string; skip: string };
-};
-
-type SeedPaper = {
-  id: string;
-  title: string;
-  topic: string;
-  source: Source;
-  cards: SeedCardFields;
-};
-
-import seeds from "../../data/paper_seeds.json";
+import type { Paper, SeedPaper } from "./types";
+import { paperSeeds } from "./paperSeeds";
 
 export const VARIANTS_PER_SEED = 10;
 
@@ -77,7 +42,7 @@ const expandSeed = (seed: SeedPaper, variantIndex: number): Paper => {
   };
 };
 
-export const samplePapers: Paper[] = (seeds as SeedPaper[]).flatMap((seed) =>
+export const samplePapers: Paper[] = paperSeeds.flatMap((seed) =>
   Array.from({ length: VARIANTS_PER_SEED }).map((_, variantIndex) =>
     expandSeed(seed, variantIndex)
   )
