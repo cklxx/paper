@@ -30,7 +30,7 @@ function useSwipeState(totalPapers: number) {
       setPaperIndex((paper) => (paper + 1) % totalPapers);
       return 0;
     });
-  }, []);
+  }, [totalPapers]);
 
   const prevCard = useCallback(() => {
     setCardIndex((current) => Math.max(current - 1, 0));
@@ -75,8 +75,10 @@ function useSwipeState(totalPapers: number) {
 }
 
 export default function App() {
-  const { paperIndex, cardIndex, handleTouchEnd, handleTouchStart } = useSwipeState();
-  const paper = samplePapers[paperIndex];
+  const { paperIndex, cardIndex, handleTouchEnd, handleTouchStart } = useSwipeState(
+    rankedPapers.length,
+  );
+  const paper = rankedPapers[paperIndex];
 
   const card = useMemo(() => paper.cards[cardIndex], [cardIndex, paper]);
 
