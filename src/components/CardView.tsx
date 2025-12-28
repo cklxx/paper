@@ -10,6 +10,7 @@ const cardClassNames: Record<Card["type"], string> = {
   method: "card card-method",
   tradeoff: "card card-tradeoff",
   who: "card card-who",
+  source: "card card-source",
 };
 
 export function CardView({ card }: CardViewProps) {
@@ -50,6 +51,18 @@ export function CardView({ card }: CardViewProps) {
         <p className="eyebrow">结果 & 代价</p>
         <div className="pill good">✅ {card.good}</div>
         <div className="pill bad">⚠️ {card.bad}</div>
+      </section>
+    );
+  }
+
+  if (card.type === "source") {
+    return (
+      <section className={cardClassNames[card.type]} aria-label="Source card">
+        <p className="eyebrow">滑到最后，直达原文</p>
+        <h1>{card.title}</h1>
+        <a className="paper-source" href={card.url} target="_blank" rel="noreferrer">
+          打开文章地址
+        </a>
       </section>
     );
   }

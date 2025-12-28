@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useRef, useState } from "react";
-import type { TouchEvent } from "react";
+import type { PointerEvent } from "react";
 import { CardView } from "./components/CardView";
 import { ProgressDots } from "./components/ProgressDots";
 import { samplePapers } from "./data/papers";
@@ -9,7 +9,6 @@ import {
   rankPapersForUser,
 } from "./data/recommendations";
 
-const CARDS_PER_PAPER = 5;
 const SWIPE_THRESHOLD = 50;
 type SwipeStart = { x: number; y: number };
 const rankedPapers = rankPapersForUser(
@@ -18,7 +17,7 @@ const rankedPapers = rankPapersForUser(
   ACTIVE_USER_ID,
 );
 
-function useSwipeState(totalPapers: number) {
+function useSwipeState(totalPapers: number, getCardCount: (paperIndex: number) => number) {
   const [paperIndex, setPaperIndex] = useState(0);
   const [cardIndex, setCardIndex] = useState(0);
   const swipeStart = useRef<SwipeStart | null>(null);
@@ -26,9 +25,10 @@ function useSwipeState(totalPapers: number) {
   const nextCard = useCallback(() => {
     setCardIndex((current) => {
       const next = current + 1;
-      return Math.min(next, CARDS_PER_PAPER - 1);
+      const limit = getCardCount(paperIndex) - 1;
+      return Math.min(next, limit);
     });
-  }, []);
+  }, [getCardCount, paperIndex]);
 
   const prevCard = useCallback(() => {
     setCardIndex((current) => Math.max(current - 1, 0));
@@ -44,22 +44,19 @@ function useSwipeState(totalPapers: number) {
     setCardIndex(0);
   }, [totalPapers]);
 
-  const handleTouchStart = useCallback((event: TouchEvent) => {
-    const firstTouch = event.touches[0];
-    if (!firstTouch) return;
-    swipeStart.current = { x: firstTouch.clientX, y: firstTouch.clientY };
+  const handlePointerDown = useCallback((event: PointerEvent) => {
+    swipeStart.current = { x: event.clientX, y: event.clientY };
   }, []);
 
-  const handleTouchEnd = useCallback(
-    (event: TouchEvent) => {
+  const handlePointerUp = useCallback(
+    (event: PointerEvent) => {
       const start = swipeStart.current;
-      const endTouch = event.changedTouches[0];
       swipeStart.current = null;
 
-      if (!start || !endTouch) return;
+      if (!start) return;
 
-      const deltaX = endTouch.clientX - start.x;
-      const deltaY = endTouch.clientY - start.y;
+      const deltaX = event.clientX - start.x;
+      const deltaY = event.clientY - start.y;
       const absX = Math.abs(deltaX);
       const absY = Math.abs(deltaY);
 
@@ -90,76 +87,53 @@ function useSwipeState(totalPapers: number) {
     prevCard,
     nextPaper,
     prevPaper,
-    handleTouchStart,
-    handleTouchEnd,
+    handlePointerDown,
+    handlePointerUp,
   };
 }
 
 export default function App() {
+  const getCardCount = useCallback(
+    (index: number) => rankedPapers[index].cards.length,
+    [],
+  );
   const {
     paperIndex,
     cardIndex,
-    handleTouchEnd,
-    handleTouchStart,
-    nextCard,
-    prevCard,
-    nextPaper,
-    prevPaper,
-  } = useSwipeState(rankedPapers.length);
+    handlePointerUp,
+    handlePointerDown,
+  } = useSwipeState(rankedPapers.length, getCardCount);
   const paper = rankedPapers[paperIndex];
 
   const card = useMemo(() => paper.cards[cardIndex], [cardIndex, paper]);
 
   return (
     <main className="app">
-      <header className="paper-header">
-        <div className="paper-meta">
-          <p className="paper-topic">{paper.topic}</p>
-          <h2 className="paper-title" aria-label="paper title">
-            {paper.title}
-          </h2>
-          <a className="paper-source" href={paper.source.url} target="_blank" rel="noreferrer">
-            {paper.source.title}
-          </a>
-        </div>
-        <div className="paper-nav">
-          <button type="button" className="nav-button" onClick={prevPaper} data-testid="prev-paper">
-            上一篇
-          </button>
-          <button type="button" className="nav-button" onClick={nextPaper} data-testid="next-paper">
-            下一篇
-          </button>
-        </div>
-      </header>
-
       <div className="card-stack">
-        <div className="card-frame" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
-          <CardView card={card} />
-          <ProgressDots total={paper.cards.length} activeIndex={cardIndex} />
-        </div>
-
-        <div className="control-row">
-          <div className="control-group">
-            <button
-              type="button"
-              className="nav-button subtle"
-              onClick={prevCard}
-              data-testid="prev-card"
-              aria-label="上一张卡片"
-            >
-              上一张
-            </button>
-            <button
-              type="button"
-              className="nav-button"
-              onClick={nextCard}
-              data-testid="next-card"
-              aria-label="下一张卡片"
-            >
-              下一张
-            </button>
+        <div
+          className="card-frame"
+          data-testid="card-frame"
+          onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
+        >
+          <div className="card-topbar">
+            <div className="paper-meta">
+              <p className="paper-topic">{paper.topic}</p>
+              <h2 className="paper-title" aria-label="paper title">
+                {paper.title}
+              </h2>
+              <a className="paper-source" href={paper.source.url} target="_blank" rel="noreferrer">
+                {paper.source.title}
+              </a>
+            </div>
           </div>
-          <p className="control-hint">左右滑切卡片，上下滑切论文</p>
+
+          <CardView card={card} />
+
+          <div className="card-controls">
+            <ProgressDots total={paper.cards.length} activeIndex={cardIndex} />
+            <p className="control-hint">左右滑切卡片，上下滑切论文</p>
+          </div>
         </div>
       </div>
     </main>
