@@ -47,3 +47,5 @@ export const samplePapers: Paper[] = paperSeeds.flatMap((seed) =>
     expandSeed(seed, variantIndex)
   )
 );
+
+export type { Paper };
