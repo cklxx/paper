@@ -3,7 +3,7 @@ from typing import List, Literal
 from pydantic import BaseModel
 
 
-CardType = Literal["hook", "intuition", "method", "tradeoff", "who"]
+CardType = Literal["hook", "intuition", "method", "tradeoff", "who", "source"]
 
 
 class MethodCard(BaseModel):
@@ -33,7 +33,13 @@ class WhoCard(BaseModel):
     skip: str
 
 
-Card = HookCard | IntuitionCard | MethodCard | TradeoffCard | WhoCard
+class SourceCard(BaseModel):
+    type: Literal["source"]
+    title: str
+    url: str
+
+
+Card = HookCard | IntuitionCard | MethodCard | TradeoffCard | WhoCard | SourceCard
 
 
 class Source(BaseModel):

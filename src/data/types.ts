@@ -3,7 +3,8 @@ export type Card =
   | { type: "intuition"; text: string }
   | { type: "method"; steps: string[] }
   | { type: "tradeoff"; good: string; bad: string }
-  | { type: "who"; do: string; skip: string };
+  | { type: "who"; do: string; skip: string }
+  | { type: "source"; title: string; url: string };
 
 export type Source = {
   title: string;

@@ -19,10 +19,17 @@ test("renders first paper and navigates cards and papers", async ({ page }) => {
   await expect(page.getByLabel("paper title")).toContainText(firstPaper.title);
   await expect(page.getByLabel("Hook card")).toContainText(firstHook?.text ?? "");
 
-  await page.getByTestId("next-card").click();
+  const cardFrame = page.getByTestId("card-frame");
+
+  const swipe = async (from: { x: number; y: number }, to: { x: number; y: number }) => {
+    await cardFrame.dispatchEvent("pointerdown", { clientX: from.x, clientY: from.y });
+    await cardFrame.dispatchEvent("pointerup", { clientX: to.x, clientY: to.y });
+  };
+
+  await swipe({ x: 300, y: 300 }, { x: 150, y: 300 });
   await expect(page.getByLabel("Intuition card")).toContainText(firstIntuition?.text ?? "");
 
-  await page.getByTestId("next-paper").click();
+  await swipe({ x: 300, y: 400 }, { x: 300, y: 200 });
   await expect(page.getByLabel("paper title")).toContainText(secondPaper.title);
   await expect(page.getByLabel("Hook card")).toContainText(secondHook?.text ?? "");
 });
