@@ -11,6 +11,7 @@ import {
 } from "./data/recommendations";
 
 const SWIPE_THRESHOLD = 28;
+const HISTORY_STORAGE_KEY = "paper-history-index";
 type SwipeStart = { x: number; y: number };
 const rankedPapers = rankPapersForUser(
   samplePapers,
@@ -167,6 +168,24 @@ export default function App() {
   } = useCardSwipe(paperIndex, getCardCount);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const storedValue = window.localStorage.getItem(HISTORY_STORAGE_KEY);
+    if (storedValue === null) return;
+
+    const parsedIndex = Number.parseInt(storedValue, 10);
+    if (Number.isNaN(parsedIndex)) return;
+
+    const clampedIndex = Math.min(Math.max(parsedIndex, 0), rankedPapers.length - 1);
+    setPaperIndex(clampedIndex);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem(HISTORY_STORAGE_KEY, paperIndex.toString());
+  }, [paperIndex]);
+
+  useEffect(() => {
     if (!emblaApi) return;
 
     const updateIndex = () => {
@@ -183,6 +202,13 @@ export default function App() {
       emblaApi.off("reInit", updateIndex);
     };
   }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    if (emblaApi.selectedScrollSnap() !== paperIndex) {
+      emblaApi.scrollTo(paperIndex);
+    }
+  }, [emblaApi, paperIndex]);
 
   const cardTransform = `translate3d(${dragOffset.x * 0.18}px, ${dragOffset.y}px, 0) rotate(${dragOffset.x * 0.02}deg)`;
   const cardTransition = isDragging ? "none" : "transform 200ms ease, box-shadow 200ms ease";
