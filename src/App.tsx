@@ -10,7 +10,7 @@ import {
   rankPapersForUser,
 } from "./data/recommendations";
 
-const SWIPE_THRESHOLD = 50;
+const SWIPE_THRESHOLD = 28;
 type SwipeStart = { x: number; y: number };
 const rankedPapers = rankPapersForUser(
   samplePapers,
