@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import type { PointerEvent } from "react";
 import { CardView } from "./components/CardView";
+import { PaperPeek } from "./components/PaperPeek";
 import { ProgressDots } from "./components/ProgressDots";
 import { samplePapers } from "./data/papers";
 import {
@@ -20,6 +21,8 @@ const rankedPapers = rankPapersForUser(
 function useSwipeState(totalPapers: number, getCardCount: (paperIndex: number) => number) {
   const [paperIndex, setPaperIndex] = useState(0);
   const [cardIndex, setCardIndex] = useState(0);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
   const activePointerId = useRef<number | null>(null);
   const swipeStart = useRef<SwipeStart | null>(null);
 
@@ -46,6 +49,8 @@ function useSwipeState(totalPapers: number, getCardCount: (paperIndex: number) =
   }, [totalPapers]);
 
   const resetSwipe = useCallback(() => {
+    setDragOffset({ x: 0, y: 0 });
+    setIsDragging(false);
     swipeStart.current = null;
     activePointerId.current = null;
   }, []);
@@ -53,6 +58,8 @@ function useSwipeState(totalPapers: number, getCardCount: (paperIndex: number) =
   const handlePointerDown = useCallback((event: PointerEvent) => {
     activePointerId.current = event.pointerId;
     swipeStart.current = { x: event.clientX, y: event.clientY };
+    setIsDragging(true);
+    setDragOffset({ x: 0, y: 0 });
     event.currentTarget.setPointerCapture(event.pointerId);
   }, []);
 
@@ -85,18 +92,21 @@ function useSwipeState(totalPapers: number, getCardCount: (paperIndex: number) =
     (event: PointerEvent) => {
       if (activePointerId.current !== event.pointerId) return;
       const start = swipeStart.current;
-      resetSwipe();
 
       if (event.currentTarget.hasPointerCapture(event.pointerId)) {
         event.currentTarget.releasePointerCapture(event.pointerId);
       }
 
-      if (!start) return;
+      if (!start) {
+        resetSwipe();
+        return;
+      }
 
       const deltaX = event.clientX - start.x;
       const deltaY = event.clientY - start.y;
 
       evaluateSwipe(deltaX, deltaY);
+      resetSwipe();
     },
     [evaluateSwipe, resetSwipe],
   );
@@ -112,9 +122,15 @@ function useSwipeState(totalPapers: number, getCardCount: (paperIndex: number) =
   const handlePointerMove = useCallback(
     (event: PointerEvent) => {
       if (activePointerId.current !== event.pointerId) return;
-      if (swipeStart.current) {
-        event.preventDefault();
-      }
+      if (!swipeStart.current) return;
+
+      const deltaX = event.clientX - swipeStart.current.x;
+      const deltaY = event.clientY - swipeStart.current.y;
+      const clampedX = Math.max(Math.min(deltaX, 140), -140);
+      const clampedY = Math.max(Math.min(deltaY, 200), -200);
+
+      setDragOffset({ x: clampedX, y: clampedY });
+      event.preventDefault();
     },
     [],
   );
@@ -122,6 +138,8 @@ function useSwipeState(totalPapers: number, getCardCount: (paperIndex: number) =
   return {
     paperIndex,
     cardIndex,
+    dragOffset,
+    isDragging,
     nextCard,
     prevCard,
     nextPaper,
@@ -141,18 +159,36 @@ export default function App() {
   const {
     paperIndex,
     cardIndex,
+    dragOffset,
+    isDragging,
     handlePointerUp,
     handlePointerDown,
     handlePointerMove,
     handlePointerCancel,
   } = useSwipeState(rankedPapers.length, getCardCount);
   const paper = rankedPapers[paperIndex];
+  const nextPaper = rankedPapers[(paperIndex + 1) % rankedPapers.length];
+  const previousPaper = rankedPapers[(paperIndex - 1 + rankedPapers.length) % rankedPapers.length];
+  const isSwipingToNext = dragOffset.y < 0;
+  const peekPaper = isSwipingToNext ? nextPaper : previousPaper;
+  const peekAmount = Math.min(Math.abs(dragOffset.y) / 160, 1);
+  const cardTransform = `translate3d(${dragOffset.x * 0.18}px, ${dragOffset.y}px, 0) rotate(${dragOffset.x * 0.02}deg)`;
+  const cardTransition = isDragging ? "none" : "transform 200ms ease, box-shadow 200ms ease";
+  const peekTransform = `translateY(${28 + dragOffset.y * 0.2}px) scale(${0.96 + peekAmount * 0.05})`;
+  const peekTransition = isDragging ? "none" : "transform 200ms ease, opacity 200ms ease";
 
   const card = useMemo(() => paper.cards[cardIndex], [cardIndex, paper]);
 
   return (
     <main className="app">
       <div className="card-stack">
+        <div className="peek-layer" aria-hidden="true">
+          <PaperPeek
+            paper={peekPaper}
+            direction={isSwipingToNext ? "next" : "previous"}
+            style={{ opacity: peekAmount, transform: peekTransform, transition: peekTransition }}
+          />
+        </div>
         <div
           className="card-frame"
           data-testid="card-frame"
@@ -160,6 +196,7 @@ export default function App() {
           onPointerUp={handlePointerUp}
           onPointerMove={handlePointerMove}
           onPointerCancel={handlePointerCancel}
+          style={{ transform: cardTransform, transition: cardTransition }}
         >
           <div className="card-topbar">
             <div className="paper-meta">
