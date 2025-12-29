@@ -1,7 +1,7 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { PointerEvent } from "react";
+import useEmblaCarousel from "embla-carousel-react";
 import { CardView } from "./components/CardView";
-import { PaperPeek } from "./components/PaperPeek";
 import { ProgressDots } from "./components/ProgressDots";
 import { samplePapers } from "./data/papers";
 import {
@@ -18,11 +18,11 @@ const rankedPapers = rankPapersForUser(
   ACTIVE_USER_ID,
 );
 
-function useSwipeState(totalPapers: number, getCardCount: (paperIndex: number) => number) {
-  const [paperIndex, setPaperIndex] = useState(0);
+function useCardSwipe(paperIndex: number, getCardCount: (index: number) => number) {
   const [cardIndex, setCardIndex] = useState(0);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
+  const [dragDirection, setDragDirection] = useState<"horizontal" | "vertical" | null>(null);
   const activePointerId = useRef<number | null>(null);
   const swipeStart = useRef<SwipeStart | null>(null);
 
@@ -38,19 +38,10 @@ function useSwipeState(totalPapers: number, getCardCount: (paperIndex: number) =
     setCardIndex((current) => Math.max(current - 1, 0));
   }, []);
 
-  const nextPaper = useCallback(() => {
-    setPaperIndex((current) => (current + 1) % totalPapers);
-    setCardIndex(0);
-  }, [totalPapers]);
-
-  const prevPaper = useCallback(() => {
-    setPaperIndex((current) => (current - 1 + totalPapers) % totalPapers);
-    setCardIndex(0);
-  }, [totalPapers]);
-
   const resetSwipe = useCallback(() => {
     setDragOffset({ x: 0, y: 0 });
     setIsDragging(false);
+    setDragDirection(null);
     swipeStart.current = null;
     activePointerId.current = null;
   }, []);
@@ -60,7 +51,7 @@ function useSwipeState(totalPapers: number, getCardCount: (paperIndex: number) =
     swipeStart.current = { x: event.clientX, y: event.clientY };
     setIsDragging(true);
     setDragOffset({ x: 0, y: 0 });
-    event.currentTarget.setPointerCapture(event.pointerId);
+    setDragDirection(null);
   }, []);
 
   const evaluateSwipe = useCallback(
@@ -68,16 +59,7 @@ function useSwipeState(totalPapers: number, getCardCount: (paperIndex: number) =
       const absX = Math.abs(deltaX);
       const absY = Math.abs(deltaY);
 
-      if (absX < SWIPE_THRESHOLD && absY < SWIPE_THRESHOLD) return;
-
-      if (absY > absX) {
-        if (deltaY <= -SWIPE_THRESHOLD) {
-          nextPaper();
-        } else {
-          prevPaper();
-        }
-        return;
-      }
+      if (absX < SWIPE_THRESHOLD || absX <= absY) return;
 
       if (deltaX <= -SWIPE_THRESHOLD) {
         nextCard();
@@ -85,17 +67,13 @@ function useSwipeState(totalPapers: number, getCardCount: (paperIndex: number) =
         prevCard();
       }
     },
-    [nextCard, nextPaper, prevCard, prevPaper],
+    [nextCard, prevCard],
   );
 
   const handlePointerUp = useCallback(
     (event: PointerEvent) => {
       if (activePointerId.current !== event.pointerId) return;
       const start = swipeStart.current;
-
-      if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-        event.currentTarget.releasePointerCapture(event.pointerId);
-      }
 
       if (!start) {
         resetSwipe();
@@ -126,24 +104,47 @@ function useSwipeState(totalPapers: number, getCardCount: (paperIndex: number) =
 
       const deltaX = event.clientX - swipeStart.current.x;
       const deltaY = event.clientY - swipeStart.current.y;
+
+      const absX = Math.abs(deltaX);
+      const absY = Math.abs(deltaY);
+
+      if (!dragDirection) {
+        if (absX < 6 && absY < 6) return;
+        setDragDirection(absX >= absY ? "horizontal" : "vertical");
+      }
+
+      if (dragDirection === "vertical") {
+        setIsDragging(false);
+        setDragOffset({ x: 0, y: 0 });
+        return;
+      }
+
       const clampedX = Math.max(Math.min(deltaX, 140), -140);
-      const clampedY = Math.max(Math.min(deltaY, 200), -200);
+      const clampedY = Math.max(Math.min(deltaY * 0.2, 40), -40);
 
       setDragOffset({ x: clampedX, y: clampedY });
-      event.preventDefault();
     },
-    [],
+    [dragDirection],
   );
 
+  useEffect(() => {
+    setCardIndex(0);
+    setDragOffset({ x: 0, y: 0 });
+  }, [paperIndex]);
+
+  useEffect(() => {
+    setCardIndex((current) => {
+      const limit = Math.max(getCardCount(paperIndex) - 1, 0);
+      return Math.min(current, limit);
+    });
+  }, [paperIndex, getCardCount]);
+
   return {
-    paperIndex,
     cardIndex,
     dragOffset,
     isDragging,
     nextCard,
     prevCard,
-    nextPaper,
-    prevPaper,
     handlePointerDown,
     handlePointerUp,
     handlePointerMove,
@@ -152,12 +153,10 @@ function useSwipeState(totalPapers: number, getCardCount: (paperIndex: number) =
 }
 
 export default function App() {
-  const getCardCount = useCallback(
-    (index: number) => rankedPapers[index].cards.length,
-    [],
-  );
+  const getCardCount = useCallback((index: number) => rankedPapers[index].cards.length, []);
+  const [paperIndex, setPaperIndex] = useState(0);
+  const [emblaRef, emblaApi] = useEmblaCarousel({ axis: "y", loop: true, align: "center" });
   const {
-    paperIndex,
     cardIndex,
     dragOffset,
     isDragging,
@@ -165,57 +164,93 @@ export default function App() {
     handlePointerDown,
     handlePointerMove,
     handlePointerCancel,
-  } = useSwipeState(rankedPapers.length, getCardCount);
-  const paper = rankedPapers[paperIndex];
-  const nextPaper = rankedPapers[(paperIndex + 1) % rankedPapers.length];
-  const previousPaper = rankedPapers[(paperIndex - 1 + rankedPapers.length) % rankedPapers.length];
-  const isSwipingToNext = dragOffset.y < 0;
-  const peekPaper = isSwipingToNext ? nextPaper : previousPaper;
-  const peekAmount = Math.min(Math.abs(dragOffset.y) / 160, 1);
+  } = useCardSwipe(paperIndex, getCardCount);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    const updateIndex = () => {
+      const currentIndex = emblaApi.selectedScrollSnap();
+      setPaperIndex(currentIndex);
+    };
+
+    emblaApi.on("select", updateIndex);
+    emblaApi.on("reInit", updateIndex);
+    updateIndex();
+
+    return () => {
+      emblaApi.off("select", updateIndex);
+      emblaApi.off("reInit", updateIndex);
+    };
+  }, [emblaApi]);
+
   const cardTransform = `translate3d(${dragOffset.x * 0.18}px, ${dragOffset.y}px, 0) rotate(${dragOffset.x * 0.02}deg)`;
   const cardTransition = isDragging ? "none" : "transform 200ms ease, box-shadow 200ms ease";
-  const peekTransform = `translateY(${28 + dragOffset.y * 0.2}px) scale(${0.96 + peekAmount * 0.05})`;
-  const peekTransition = isDragging ? "none" : "transform 200ms ease, opacity 200ms ease";
-
-  const card = useMemo(() => paper.cards[cardIndex], [cardIndex, paper]);
+  const paper = rankedPapers[paperIndex];
+  const activeCard = useMemo(
+    () => paper.cards[Math.min(cardIndex, paper.cards.length - 1)],
+    [cardIndex, paper],
+  );
 
   return (
     <main className="app">
-      <div className="card-stack">
-        <div className="peek-layer" aria-hidden="true">
-          <PaperPeek
-            paper={peekPaper}
-            direction={isSwipingToNext ? "next" : "previous"}
-            style={{ opacity: peekAmount, transform: peekTransform, transition: peekTransition }}
-          />
-        </div>
-        <div
-          className="card-frame"
-          data-testid="card-frame"
-          onPointerDown={handlePointerDown}
-          onPointerUp={handlePointerUp}
-          onPointerMove={handlePointerMove}
-          onPointerCancel={handlePointerCancel}
-          style={{ transform: cardTransform, transition: cardTransition }}
-        >
-          <div className="card-topbar">
-            <div className="paper-meta">
-              <p className="paper-topic">{paper.topic}</p>
-              <h2 className="paper-title" aria-label="paper title">
-                {paper.title}
-              </h2>
-              <a className="paper-source" href={paper.source.url} target="_blank" rel="noreferrer">
-                {paper.source.title}
-              </a>
-            </div>
-          </div>
+      <div className="feed" ref={emblaRef} aria-label="Paper vertical feed">
+        <div className="feed-track">
+          {rankedPapers.map((paperItem, index) => {
+            const isActive = index === paperIndex;
+            const cardForSlide = isActive
+              ? activeCard
+              : paperItem.cards[Math.min(cardIndex, paperItem.cards.length - 1)] ?? paperItem.cards[0];
+            const handlers = isActive
+              ? {
+                  onPointerDown: handlePointerDown,
+                  onPointerUp: handlePointerUp,
+                  onPointerMove: handlePointerMove,
+                  onPointerCancel: handlePointerCancel,
+                }
+              : {};
 
-          <CardView card={card} />
+            return (
+              <section className="feed-slide" key={paperItem.title} aria-hidden={!isActive}>
+                <div className="card-stack">
+                  <div
+                    className="card-frame"
+                    data-testid={isActive ? "card-frame" : undefined}
+                    style={
+                      isActive
+                        ? { transform: cardTransform, transition: cardTransition }
+                        : { transform: "translate3d(0, 12px, 0) scale(0.98)", opacity: 0.92 }
+                    }
+                    {...handlers}
+                  >
+                    <div className="card-topbar">
+                      <div className="paper-meta">
+                        <p className="paper-topic">{paperItem.topic}</p>
+                        <h2 className="paper-title" aria-label="paper title">
+                          {paperItem.title}
+                        </h2>
+                        <a
+                          className="paper-source"
+                          href={paperItem.source.url}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {paperItem.source.title}
+                        </a>
+                      </div>
+                    </div>
 
-          <div className="card-controls">
-            <ProgressDots total={paper.cards.length} activeIndex={cardIndex} />
-            <p className="control-hint">左右滑切卡片，上下滑切论文</p>
-          </div>
+                    <CardView card={cardForSlide} />
+
+                    <div className="card-controls">
+                      <ProgressDots total={paperItem.cards.length} activeIndex={isActive ? cardIndex : 0} />
+                      <p className="control-hint">左右滑切卡片，上下滑切论文</p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            );
+          })}
         </div>
       </div>
     </main>
