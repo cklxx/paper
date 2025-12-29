@@ -20,6 +20,7 @@ const rankedPapers = rankPapersForUser(
 function useSwipeState(totalPapers: number, getCardCount: (paperIndex: number) => number) {
   const [paperIndex, setPaperIndex] = useState(0);
   const [cardIndex, setCardIndex] = useState(0);
+  const activePointerId = useRef<number | null>(null);
   const swipeStart = useRef<SwipeStart | null>(null);
 
   const nextCard = useCallback(() => {
@@ -44,19 +45,19 @@ function useSwipeState(totalPapers: number, getCardCount: (paperIndex: number) =
     setCardIndex(0);
   }, [totalPapers]);
 
-  const handlePointerDown = useCallback((event: PointerEvent) => {
-    swipeStart.current = { x: event.clientX, y: event.clientY };
+  const resetSwipe = useCallback(() => {
+    swipeStart.current = null;
+    activePointerId.current = null;
   }, []);
 
-  const handlePointerUp = useCallback(
-    (event: PointerEvent) => {
-      const start = swipeStart.current;
-      swipeStart.current = null;
+  const handlePointerDown = useCallback((event: PointerEvent) => {
+    activePointerId.current = event.pointerId;
+    swipeStart.current = { x: event.clientX, y: event.clientY };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }, []);
 
-      if (!start) return;
-
-      const deltaX = event.clientX - start.x;
-      const deltaY = event.clientY - start.y;
+  const evaluateSwipe = useCallback(
+    (deltaX: number, deltaY: number) => {
       const absX = Math.abs(deltaX);
       const absY = Math.abs(deltaY);
 
@@ -77,7 +78,45 @@ function useSwipeState(totalPapers: number, getCardCount: (paperIndex: number) =
         prevCard();
       }
     },
-    [nextCard, nextPaper, prevCard, prevPaper]
+    [nextCard, nextPaper, prevCard, prevPaper],
+  );
+
+  const handlePointerUp = useCallback(
+    (event: PointerEvent) => {
+      if (activePointerId.current !== event.pointerId) return;
+      const start = swipeStart.current;
+      resetSwipe();
+
+      if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+        event.currentTarget.releasePointerCapture(event.pointerId);
+      }
+
+      if (!start) return;
+
+      const deltaX = event.clientX - start.x;
+      const deltaY = event.clientY - start.y;
+
+      evaluateSwipe(deltaX, deltaY);
+    },
+    [evaluateSwipe, resetSwipe],
+  );
+
+  const handlePointerCancel = useCallback(
+    (event: PointerEvent) => {
+      if (activePointerId.current !== event.pointerId) return;
+      resetSwipe();
+    },
+    [resetSwipe],
+  );
+
+  const handlePointerMove = useCallback(
+    (event: PointerEvent) => {
+      if (activePointerId.current !== event.pointerId) return;
+      if (swipeStart.current) {
+        event.preventDefault();
+      }
+    },
+    [],
   );
 
   return {
@@ -89,6 +128,8 @@ function useSwipeState(totalPapers: number, getCardCount: (paperIndex: number) =
     prevPaper,
     handlePointerDown,
     handlePointerUp,
+    handlePointerMove,
+    handlePointerCancel,
   };
 }
 
@@ -102,6 +143,8 @@ export default function App() {
     cardIndex,
     handlePointerUp,
     handlePointerDown,
+    handlePointerMove,
+    handlePointerCancel,
   } = useSwipeState(rankedPapers.length, getCardCount);
   const paper = rankedPapers[paperIndex];
 
@@ -115,6 +158,8 @@ export default function App() {
           data-testid="card-frame"
           onPointerDown={handlePointerDown}
           onPointerUp={handlePointerUp}
+          onPointerMove={handlePointerMove}
+          onPointerCancel={handlePointerCancel}
         >
           <div className="card-topbar">
             <div className="paper-meta">
