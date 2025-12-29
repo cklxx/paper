@@ -19,6 +19,18 @@ const rankedPapers = rankPapersForUser(
   ACTIVE_USER_ID,
 );
 
+function getStoredPaperIndex() {
+  if (typeof window === "undefined") return 0;
+
+  const storedValue = window.localStorage.getItem(HISTORY_STORAGE_KEY);
+  if (storedValue === null) return 0;
+
+  const parsedIndex = Number.parseInt(storedValue, 10);
+  if (Number.isNaN(parsedIndex)) return 0;
+
+  return Math.min(Math.max(parsedIndex, 0), rankedPapers.length - 1);
+}
+
 function useCardSwipe(paperIndex: number, getCardCount: (index: number) => number) {
   const [cardIndex, setCardIndex] = useState(0);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
@@ -155,8 +167,14 @@ function useCardSwipe(paperIndex: number, getCardCount: (index: number) => numbe
 
 export default function App() {
   const getCardCount = useCallback((index: number) => rankedPapers[index].cards.length, []);
-  const [paperIndex, setPaperIndex] = useState(0);
-  const [emblaRef, emblaApi] = useEmblaCarousel({ axis: "y", loop: true, align: "center" });
+  const initialPaperIndex = useMemo(getStoredPaperIndex, []);
+  const [paperIndex, setPaperIndex] = useState(initialPaperIndex);
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    axis: "y",
+    loop: true,
+    align: "center",
+    startIndex: initialPaperIndex,
+  });
   const {
     cardIndex,
     dragOffset,
@@ -166,19 +184,6 @@ export default function App() {
     handlePointerMove,
     handlePointerCancel,
   } = useCardSwipe(paperIndex, getCardCount);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const storedValue = window.localStorage.getItem(HISTORY_STORAGE_KEY);
-    if (storedValue === null) return;
-
-    const parsedIndex = Number.parseInt(storedValue, 10);
-    if (Number.isNaN(parsedIndex)) return;
-
-    const clampedIndex = Math.min(Math.max(parsedIndex, 0), rankedPapers.length - 1);
-    setPaperIndex(clampedIndex);
-  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
