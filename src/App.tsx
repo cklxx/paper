@@ -226,19 +226,6 @@ export default function App() {
   return (
     <main className="app">
       <div className="shell">
-        <header className="hero">
-          <div className="hero-text">
-            <p className="badge">Paper Studio</p>
-            <h1 className="hero-title">锋利摘要，只留关键</h1>
-            <p className="hero-body">上下左右，一划即切。纯净排版，干脆呈现每个要点。</p>
-          </div>
-          <div className="hero-rail">
-            <p className="rail-label">左右 · 切换卡片</p>
-            <div className="rail-divider" />
-            <p className="rail-label">上下 · 切换论文</p>
-          </div>
-        </header>
-
         <section className="reader">
           <div className="reader-glow" aria-hidden="true" />
           <div className="feed" ref={emblaRef} aria-label="Paper vertical feed">

@@ -56,82 +56,12 @@ body {
 .shell {
   width: min(1080px, 100%);
   display: grid;
-  gap: 20px;
-}
-
-.hero {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 14px;
-  padding: 16px 16px 10px;
-  border-radius: 18px;
-  background: linear-gradient(120deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  box-shadow:
-    0 14px 60px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
-}
-
-.hero-text {
-  display: grid;
-  gap: 10px;
-}
-
-.badge {
-  width: fit-content;
-  padding: 7px 12px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  background: rgba(255, 255, 255, 0.03);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-weight: 700;
-  font-size: 12px;
-  margin: 0;
-  color: #c7cbe0;
-}
-
-.hero-title {
-  margin: 0;
-  font-size: clamp(30px, 4vw, 42px);
-  letter-spacing: -0.02em;
-  font-weight: 800;
-}
-
-.hero-body {
-  margin: 0;
-  color: #c6cde3;
-  font-size: 15px;
-  max-width: 540px;
-}
-
-.hero-rail {
-  display: inline-flex;
-  align-items: center;
   gap: 12px;
-  padding: 12px 14px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.015);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  color: #d0d6e6;
-}
-
-.rail-label {
-  margin: 0;
-  font-size: 13px;
-  letter-spacing: 0.02em;
-}
-
-.rail-divider {
-  width: 1px;
-  height: 22px;
-  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.3), transparent);
 }
 
 .reader {
   position: relative;
-  padding: 14px;
+  padding: 18px 14px 16px;
   border-radius: 24px;
   border: 1px solid rgba(255, 255, 255, 0.06);
   background: rgba(255, 255, 255, 0.015);
@@ -235,7 +165,7 @@ body {
   justify-content: center;
   gap: 16px;
   border-radius: 30px;
-  padding: 24px;
+  padding: 22px;
   background: linear-gradient(170deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.01));
   border: 1px solid rgba(255, 255, 255, 0.06);
   box-shadow:
