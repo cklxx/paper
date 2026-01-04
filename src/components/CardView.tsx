@@ -17,7 +17,7 @@ export function CardView({ card }: CardViewProps) {
   if (card.type === "hook") {
     return (
       <section className={cardClassNames[card.type]} aria-label="Hook card">
-        <p className="eyebrow">一句话暴击</p>
+        <p className="eyebrow">核心一句</p>
         <h1>{card.text}</h1>
       </section>
     );
@@ -26,7 +26,7 @@ export function CardView({ card }: CardViewProps) {
   if (card.type === "intuition") {
     return (
       <section className={cardClassNames[card.type]} aria-label="Intuition card">
-        <p className="eyebrow">反直觉点</p>
+        <p className="eyebrow">关键反直觉</p>
         <p className="body-lg">{card.text}</p>
       </section>
     );
@@ -35,7 +35,7 @@ export function CardView({ card }: CardViewProps) {
   if (card.type === "method") {
     return (
       <section className={cardClassNames[card.type]} aria-label="Method card">
-        <p className="eyebrow">他们真正做的事</p>
+        <p className="eyebrow">关键步骤</p>
         <ol>
           {card.steps.map((step) => (
             <li key={step}>{step}</li>
@@ -48,7 +48,7 @@ export function CardView({ card }: CardViewProps) {
   if (card.type === "tradeoff") {
     return (
       <section className={cardClassNames[card.type]} aria-label="Tradeoff card">
-        <p className="eyebrow">结果 & 代价</p>
+        <p className="eyebrow">结果 / 代价</p>
         <div className="pill good">✅ {card.good}</div>
         <div className="pill bad">⚠️ {card.bad}</div>
       </section>
@@ -58,7 +58,7 @@ export function CardView({ card }: CardViewProps) {
   if (card.type === "source") {
     return (
       <section className={cardClassNames[card.type]} aria-label="Source card">
-        <p className="eyebrow">滑到最后，直达原文</p>
+        <p className="eyebrow">原文入口</p>
         <h1>{card.title}</h1>
         <a className="paper-source" href={card.url} target="_blank" rel="noreferrer">
           打开文章地址
@@ -69,7 +69,7 @@ export function CardView({ card }: CardViewProps) {
 
   return (
     <section className={cardClassNames[card.type]} aria-label="Who card">
-      <p className="eyebrow">你要不要在意</p>
+      <p className="eyebrow">适用人群</p>
       <div className="who-row">
         <div className="pill good">✔ {card.do}</div>
         <div className="pill bad">✘ {card.skip}</div>
