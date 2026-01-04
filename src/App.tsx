@@ -225,64 +225,73 @@ export default function App() {
 
   return (
     <main className="app">
-      <div className="feed" ref={emblaRef} aria-label="Paper vertical feed">
-        <div className="feed-track">
-          {rankedPapers.map((paperItem, index) => {
-            const isActive = index === paperIndex;
-            const cardForSlide = isActive
-              ? activeCard
-              : paperItem.cards[Math.min(cardIndex, paperItem.cards.length - 1)] ?? paperItem.cards[0];
-            const handlers = isActive
-              ? {
-                  onPointerDown: handlePointerDown,
-                  onPointerUp: handlePointerUp,
-                  onPointerMove: handlePointerMove,
-                  onPointerCancel: handlePointerCancel,
-                }
-              : {};
-
-            return (
-              <section className="feed-slide" key={paperItem.title} aria-hidden={!isActive}>
-                <div className="card-stack">
-                  <div
-                    className="card-frame"
-                    data-testid={isActive ? "card-frame" : undefined}
-                    style={
-                      isActive
-                        ? { transform: cardTransform, transition: cardTransition }
-                        : { transform: "translate3d(0, 12px, 0) scale(0.98)", opacity: 0.92 }
+      <div className="shell">
+        <section className="reader">
+          <div className="reader-glow" aria-hidden="true" />
+          <div className="feed" ref={emblaRef} aria-label="Paper vertical feed">
+            <div className="feed-track">
+              {rankedPapers.map((paperItem, index) => {
+                const isActive = index === paperIndex;
+                const cardForSlide = isActive
+                  ? activeCard
+                  : paperItem.cards[Math.min(cardIndex, paperItem.cards.length - 1)] ?? paperItem.cards[0];
+                const handlers = isActive
+                  ? {
+                      onPointerDown: handlePointerDown,
+                      onPointerUp: handlePointerUp,
+                      onPointerMove: handlePointerMove,
+                      onPointerCancel: handlePointerCancel,
                     }
-                    {...handlers}
-                  >
-                    <div className="card-topbar">
-                      <div className="paper-meta">
-                        <p className="paper-topic">{paperItem.topic}</p>
-                        <h2 className="paper-title" aria-label="paper title">
-                          {paperItem.title}
-                        </h2>
-                        <a
-                          className="paper-source"
-                          href={paperItem.source.url}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {paperItem.source.title}
-                        </a>
+                  : {};
+
+                return (
+                  <section className="feed-slide" key={paperItem.title} aria-hidden={!isActive}>
+                    <div className="card-stack">
+                      <div
+                        className="card-frame"
+                        data-testid={isActive ? "card-frame" : undefined}
+                        style={
+                          isActive
+                            ? { transform: cardTransform, transition: cardTransition }
+                            : { transform: "translate3d(0, 12px, 0) scale(0.98)", opacity: 0.92 }
+                        }
+                        {...handlers}
+                      >
+                        <div className="card-topbar">
+                          <div className="paper-meta">
+                            <p className="paper-topic">{paperItem.topic}</p>
+                            <h2 className="paper-title" aria-label="paper title">
+                              {paperItem.title}
+                            </h2>
+                            <a
+                              className="paper-source"
+                              href={paperItem.source.url}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {paperItem.source.title}
+                            </a>
+                          </div>
+                          <div className="paper-chip">精选</div>
+                        </div>
+
+                        <CardView card={cardForSlide} />
+
+                        <div className="card-controls">
+                          <ProgressDots
+                            total={paperItem.cards.length}
+                            activeIndex={isActive ? cardIndex : 0}
+                          />
+                          <p className="control-hint">轻扫切卡，滑动换篇，保持锋利专注。</p>
+                        </div>
                       </div>
                     </div>
-
-                    <CardView card={cardForSlide} />
-
-                    <div className="card-controls">
-                      <ProgressDots total={paperItem.cards.length} activeIndex={isActive ? cardIndex : 0} />
-                      <p className="control-hint">左右滑切卡片，上下滑切论文</p>
-                    </div>
-                  </div>
-                </div>
-              </section>
-            );
-          })}
-        </div>
+                  </section>
+                );
+              })}
+            </div>
+          </div>
+        </section>
       </div>
     </main>
   );
