@@ -31,6 +31,9 @@ export default function Navbar() {
             </NavLink>
           ))}
         </nav>
+        <div className="ml-auto hidden md:flex items-center gap-2">
+          <div aria-hidden="true" className="h-8 w-8 animate-pulse bg-muted rounded-full cursor-pointer" />
+        </div>
         <button
           className="ml-auto md:hidden p-2 hover:bg-muted rounded-lg transition-colors"
           aria-label="切换菜单"
