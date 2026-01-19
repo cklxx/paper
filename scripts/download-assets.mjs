@@ -38,7 +38,7 @@ for (const url of assets) {
 }
 
 const css = await fetch(`${base}/_next/static/chunks/911c2be42a6fe28c.css`).then((r) => r.text());
-const fontMatches = [...css.matchAll(/media\/([a-z0-9-]+\.woff2)/g)].map((m) => m[1]);
+const fontMatches = [...css.matchAll(/media\/([a-z0-9.-]+\.woff2)/g)].map((m) => m[1]);
 
 for (const file of new Set(fontMatches)) {
   await download(`${base}/_next/static/media/${file}`, path.join(fontsDir, file));
