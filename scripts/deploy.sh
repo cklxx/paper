@@ -4,9 +4,15 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+if command -v uv >/dev/null 2>&1; then
+  uv venv .venv
+  source .venv/bin/activate
+  uv pip install -r requirements.txt
+else
+  python3 -m venv .venv
+  source .venv/bin/activate
+  pip install -r requirements.txt
+fi
 
 npm ci
 npm run build

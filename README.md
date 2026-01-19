@@ -36,7 +36,7 @@ curl http://localhost:8000/papers
 
 ### 一键脚本
 
-- 开发模式：`npm run dev`（等同 `./scripts/dev.sh`）会装好依赖并同时拉起 `uvicorn --reload` 与前端 `vite dev`。
+- 开发模式：`npm run dev`（等同 `./scripts/dev.sh`）会装好依赖并同时拉起 `uvicorn --reload` 与前端 `vite dev`。若已安装 `uv` 会优先使用，否则退回 `python3`。
 - 部署验证：`./scripts/deploy.sh` 会执行 `npm ci && npm run build` 后分别启动后端（多进程）与前端 `vite preview` 服务。按 `Ctrl+C` 即可退出并清理进程。
 
 ## GitHub Pages 纯前端部署
