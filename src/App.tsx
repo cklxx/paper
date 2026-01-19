@@ -1,8 +1,9 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useParams } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import Papers from "./pages/Papers";
 import PaperDetail from "./pages/PaperDetail";
+import PaperProblem from "./pages/PaperProblem";
 import Roadmap from "./pages/Roadmap";
 import Reviews from "./pages/Reviews";
 import Sponsors from "./pages/Sponsors";
@@ -16,6 +17,7 @@ export default function App() {
         <Route index element={<Home />} />
         <Route path="papers" element={<Papers />} />
         <Route path="papers/:paperId" element={<PaperDetail />} />
+        <Route path="papers/:paperId/problems/:problemId" element={<PaperProblemRoute />} />
         <Route path="roadmap" element={<Roadmap />} />
         <Route path="reviews" element={<Reviews />} />
         <Route path="sponsors" element={<Sponsors />} />
@@ -24,4 +26,9 @@ export default function App() {
       </Route>
     </Routes>
   );
+}
+
+function PaperProblemRoute() {
+  const { problemId } = useParams();
+  return <PaperProblem key={problemId} />;
 }
