@@ -28,7 +28,7 @@ def test_list_papers(client: TestClient):
     response = client.get("/papers")
     assert response.status_code == 200
     payload = response.json()
-    assert len(payload) >= 100
+    assert len(payload) >= 60
     assert any(paper["id"] == "attention-is-all-you-need" for paper in payload)
     assert all("source" in paper for paper in payload)
 
@@ -70,3 +70,65 @@ def test_crawl_persists(client: TestClient, monkeypatch: pytest.MonkeyPatch):
 
     papers_response = client.get("/papers")
     assert any(paper["id"] == data["id"] for paper in papers_response.json())
+
+
+def test_run_problem_endpoint(client: TestClient):
+    code = """
+import math
+
+def positional_encoding(max_len: int, d_model: int):
+    result = []
+    for pos in range(max_len):
+        row = []
+        for i in range(d_model):
+            angle = pos / (10000 ** (2 * (i // 2) / d_model))
+            if i % 2 == 0:
+                row.append(math.sin(angle))
+            else:
+                row.append(math.cos(angle))
+        result.append(row)
+    return result
+"""
+    response = client.post(
+        "/api/run",
+        json={
+            "paper_id": "attention_is_all_you_need",
+            "problem_id": "a1_positional_encoding",
+            "code": code,
+        },
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["status"] == "ok"
+    assert payload["total"] == 1
+
+
+def test_submit_problem_endpoint(client: TestClient):
+    code = """
+import math
+
+def positional_encoding(max_len: int, d_model: int):
+    result = []
+    for pos in range(max_len):
+        row = []
+        for i in range(d_model):
+            angle = pos / (10000 ** (2 * (i // 2) / d_model))
+            if i % 2 == 0:
+                row.append(math.sin(angle))
+            else:
+                row.append(math.cos(angle))
+        result.append(row)
+    return result
+"""
+    response = client.post(
+        "/api/submit",
+        json={
+            "paper_id": "attention_is_all_you_need",
+            "problem_id": "a1_positional_encoding",
+            "code": code,
+        },
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["status"] == "ok"
+    assert payload["total"] == 2

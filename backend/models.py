@@ -1,4 +1,4 @@
-from typing import List, Literal
+from typing import List, Literal, Union
 
 from pydantic import BaseModel
 
@@ -39,7 +39,7 @@ class SourceCard(BaseModel):
     url: str
 
 
-Card = HookCard | IntuitionCard | MethodCard | TradeoffCard | WhoCard | SourceCard
+Card = Union[HookCard, IntuitionCard, MethodCard, TradeoffCard, WhoCard, SourceCard]
 
 
 class Source(BaseModel):

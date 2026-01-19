@@ -12,7 +12,10 @@ from .database import (
     list_papers as fetch_all_papers,
     upsert_papers,
 )
+from .evaluator import run_problem
 from .models import Paper
+from .problems import get_problem
+from .schemas import RunRequest, RunResponse
 
 class CrawlRequest(BaseModel):
     url: str
@@ -56,3 +59,27 @@ def crawl_paper(request: CrawlRequest) -> Paper:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     upsert_papers([paper])
     return paper
+
+
+@app.post("/api/run", response_model=RunResponse, tags=["judge"])
+def run_endpoint(payload: RunRequest) -> RunResponse:
+    try:
+        problem = get_problem(payload.problem_id)
+    except KeyError:
+        raise HTTPException(status_code=404, detail="Problem not found")
+    if problem["paper_id"] != payload.paper_id:
+        raise HTTPException(status_code=404, detail="Problem not found")
+    result = run_problem(problem, payload.code, run_all=False)
+    return RunResponse(**result)
+
+
+@app.post("/api/submit", response_model=RunResponse, tags=["judge"])
+def submit_endpoint(payload: RunRequest) -> RunResponse:
+    try:
+        problem = get_problem(payload.problem_id)
+    except KeyError:
+        raise HTTPException(status_code=404, detail="Problem not found")
+    if problem["paper_id"] != payload.paper_id:
+        raise HTTPException(status_code=404, detail="Problem not found")
+    result = run_problem(problem, payload.code, run_all=True)
+    return RunResponse(**result)
