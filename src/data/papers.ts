@@ -1,23 +1,19 @@
-import type { Card, Paper, SeedPaper } from "./types";
-import { paperSeeds } from "./paperSeeds";
+export type Paper = {
+  id: string;
+  title: string;
+  summary: string;
+  tags: string[];
+  difficulty: "入门" | "进阶" | "硬核";
+};
 
-const buildCardsFromSeed = (seed: SeedPaper): Card[] => [
-  { type: "hook", text: seed.cards.hook },
-  { type: "intuition", text: seed.cards.intuition },
-  { type: "method", steps: seed.cards.method },
-  { type: "tradeoff", good: seed.cards.tradeoff.good, bad: seed.cards.tradeoff.bad },
-  { type: "who", do: seed.cards.who.do, skip: seed.cards.who.skip },
-  { type: "source", title: seed.source.title, url: seed.source.url },
+export const papers: Paper[] = [
+  {
+    id: "attention",
+    title: "注意力机制",
+    summary: "从打分到权重，完整复现核心公式。",
+    tags: ["NLP", "Transformer"],
+    difficulty: "入门",
+  },
 ];
 
-const expandSeed = (seed: SeedPaper): Paper => ({
-  id: seed.id,
-  title: seed.title,
-  topic: seed.topic,
-  source: seed.source,
-  cards: buildCardsFromSeed(seed),
-});
-
-export const samplePapers: Paper[] = paperSeeds.map((seed) => expandSeed(seed));
-
-export type { Paper };
+export const allTags = ["NLP", "Transformer", "CV", "RL"];
