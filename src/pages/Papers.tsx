@@ -2,10 +2,12 @@ import { useMemo } from "react";
 import PaperCard from "../components/PaperCard";
 import { allTags, papers } from "../data/papers";
 import { useLocalStorageState } from "../hooks/useLocalStorageState";
+import { useProgress } from "../hooks/useProgress";
 
 export default function Papers() {
   const [query, setQuery] = useLocalStorageState("pc.search", "");
   const [activeTags, setActiveTags] = useLocalStorageState<string[]>("pc.filters", []);
+  const { getCounts } = useProgress();
 
   const filtered = useMemo(() => {
     return papers.filter((paper) => {
@@ -60,7 +62,7 @@ export default function Papers() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {filtered.map((paper) => (
-          <PaperCard key={paper.id} paper={paper} />
+          <PaperCard key={paper.id} paper={paper} progress={getCounts(paper.id)} />
         ))}
       </div>
     </div>

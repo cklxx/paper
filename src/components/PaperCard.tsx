@@ -1,8 +1,16 @@
+import { Link } from "react-router-dom";
 import type { Paper } from "../data/papers";
 
-export default function PaperCard({ paper }: { paper: Paper }) {
+type Progress = {
+  completed: number;
+  total: number;
+};
+
+export default function PaperCard({ paper, progress }: { paper: Paper; progress?: Progress }) {
+  const percent = progress && progress.total ? (progress.completed / progress.total) * 100 : 0;
+
   return (
-    <div className="glass p-6 rounded-xl border border-white/10 hover-lift">
+    <Link to={`/papers/${paper.id}`} className="glass p-6 rounded-xl border border-white/10 hover-lift block">
       <div className="flex items-center justify-between mb-2">
         <h3 className="text-lg font-semibold">{paper.title}</h3>
         <span className="text-xs text-muted-foreground">{paper.difficulty}</span>
@@ -15,6 +23,19 @@ export default function PaperCard({ paper }: { paper: Paper }) {
           </span>
         ))}
       </div>
-    </div>
+      {progress ? (
+        <div className="mt-4">
+          <div className="flex items-center justify-between text-xs text-muted-foreground">
+            <span>进度</span>
+            <span>
+              {progress.completed}/{progress.total}
+            </span>
+          </div>
+          <div className="mt-2 h-1 rounded-full bg-white/10">
+            <div className="h-1 rounded-full bg-emerald-400" style={{ width: `${percent}%` }} />
+          </div>
+        </div>
+      ) : null}
+    </Link>
   );
 }
