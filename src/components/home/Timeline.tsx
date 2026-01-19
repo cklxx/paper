@@ -1,8 +1,15 @@
 import { timeline } from "../../data/home";
+import { useReveal } from "../../hooks/useReveal";
 
 export default function Timeline() {
+  const { ref, visible } = useReveal();
+
   return (
-    <div className="relative h-[300vh] w-full">
+    <div
+      ref={ref}
+      data-visible={visible}
+      className={`relative h-[300vh] w-full ${visible ? "animate-fade-in" : "opacity-0"}`}
+    >
       <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col items-center justify-center">
         <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 w-max text-center">
           <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-white/50">
