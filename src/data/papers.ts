@@ -1,11 +1,36 @@
+import seeds from "../../data/paper_seeds.json";
+
+type Seed = {
+  id: string;
+  title: string;
+  topic: string;
+  source: {
+    title: string;
+    url: string;
+  };
+  cards: {
+    hook: string;
+    intuition: string;
+    method: string[];
+    tradeoff: { good: string; bad: string };
+    who: { do: string; skip: string };
+  };
+};
+
 export type Paper = {
   id: string;
   title: string;
-  authors: string[];
-  year: number;
+  summary: string;
   description: string;
   tags: string[];
-  url: string;
+  difficulty: "入门" | "进阶" | "硬核";
+  year?: number;
+  authors: string[];
+  venue?: string;
+  source: {
+    title: string;
+    url: string;
+  };
 };
 
 export const paperTagStyles: Record<string, string> = {
@@ -74,320 +99,91 @@ export const paperFilterStyles: Record<string, string> = {
   "检索": "bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 border-blue-500/20",
 };
 
-export const papers: Paper[] = [
-  {
-    id: "vision_transformer",
-    title: "视觉 Transformer（ViT）",
-    authors: ["Dosovitskiy 等"],
-    year: 2020,
-    description: "把图像切块，用 Transformer 做识别。",
-    url: "https://arxiv.org/abs/2010.11929",
-    tags: ["视觉", "注意力"],
-  },
-  {
-    id: "less_is_more",
-    title: "小网络递归推理",
-    authors: ["Alexia Jolicoeur-Martineau"],
-    year: 2025,
-    description: "递归更新隐状态，反复修正答案。",
-    url: "https://arxiv.org/abs/2510.04871",
-    tags: ["自然语言", "推理"],
-  },
-  {
-    id: "lora",
-    title: "LoRA 低秩适配",
-    authors: ["Hu 等"],
-    year: 2021,
-    description: "用低秩更新，高效微调大模型。",
-    url: "https://arxiv.org/abs/2106.09685",
-    tags: ["微调", "参数高效", "低秩"],
-  },
-  {
-    id: "generative_adversarial_networks",
-    title: "对抗生成网络（GAN）",
-    authors: ["Goodfellow 等"],
-    year: 2014,
-    description: "生成器与判别器对抗学习。",
-    url: "https://arxiv.org/abs/1406.2661",
-    tags: ["视觉", "对抗生成"],
-  },
-  {
-    id: "lstm_from_scratch",
-    title: "长短期记忆（LSTM）",
-    authors: ["Hochreiter", "Schmidhuber"],
-    year: 1997,
-    description: "从门控到反传，搭起完整 LSTM。",
-    url: "https://www.bioinf.jku.at/publications/older/2604.pdf",
-    tags: ["自然语言", "循环网络"],
-  },
-  {
-    id: "owl_vit",
-    title: "OWL-ViT 开放词表检测",
-    authors: ["Minderer 等"],
-    year: 2022,
-    description: "用文本提示做开放词表目标检测。",
-    url: "https://arxiv.org/abs/2205.06230",
-    tags: ["视觉", "目标检测", "开放词表"],
-  },
-  {
-    id: "bert",
-    title: "BERT 双向预训练",
-    authors: ["Devlin 等"],
-    year: 2018,
-    description: "掩码语言模型 + 下一句预测。",
-    url: "https://arxiv.org/abs/1810.04805",
-    tags: ["自然语言", "注意力", "预训练"],
-  },
-  {
-    id: "rnn_from_scratch",
-    title: "循环神经网络（RNN）",
-    authors: ["多作者"],
-    year: 1980,
-    description: "从单元到 BPTT，完整 RNN。",
-    url: "https://arxiv.org/abs/1912.05911",
-    tags: ["自然语言", "循环网络"],
-  },
-  {
-    id: "cnn_from_scratch",
-    title: "AlexNet 图像分类",
-    authors: ["Alex Krizhevsky", "Ilya Sutskever", "Geoffrey E. Hinton"],
-    year: 2012,
-    description: "卷积 + ReLU + 池化，开启深度视觉。",
-    url: "https://proceedings.neurips.cc/paper_files/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf",
-    tags: ["视觉", "卷积"],
-  },
-  {
-    id: "world_models",
-    title: "世界模型",
-    authors: ["Ha", "Schmidhuber"],
-    year: 2018,
-    description: "学环境时空表征，用于强化学习。",
-    url: "https://arxiv.org/abs/1803.10122",
-    tags: ["强化学习", "变分自编码", "循环网络"],
-  },
-  {
-    id: "variational_autoencoder",
-    title: "变分自编码（VAE）",
-    authors: ["Diederik P Kingma", "Max Welling"],
-    year: 2013,
-    description: "重参数化学习潜在空间。",
-    url: "https://arxiv.org/abs/1312.6114",
-    tags: ["视觉", "变分自编码"],
-  },
-  {
-    id: "attention_is_all_you_need",
-    title: "注意力就是一切",
-    authors: ["Vaswani 等"],
-    year: 2017,
-    description: "用自注意力取代 RNN/CNN。",
-    url: "https://arxiv.org/abs/1706.03762",
-    tags: ["自然语言", "注意力"],
-  },
-  {
-    id: "matryoshka_representation_learning",
-    title: "套娃式表示学习",
-    authors: ["Kusupati 等"],
-    year: 2022,
-    description: "一个嵌入，多层维度可伸缩。",
-    url: "https://arxiv.org/abs/2205.13147",
-    tags: ["表示学习", "嵌入"],
-  },
-  {
-    id: "resnet",
-    title: "ResNet 残差网络",
-    authors: ["He 等"],
-    year: 2015,
-    description: "残差连接，训练更深网络。",
-    url: "https://arxiv.org/abs/1512.03385",
-    tags: ["视觉", "卷积"],
-  },
-  {
-    id: "unet",
-    title: "U-Net 语义分割",
-    authors: ["Ronneberger 等"],
-    year: 2015,
-    description: "编码器-解码器做像素分割。",
-    url: "https://arxiv.org/abs/1505.04597",
-    tags: ["视觉", "语义分割"],
-  },
-  {
-    id: "yolo",
-    title: "YOLO 实时检测",
-    authors: ["Redmon 等"],
-    year: 2016,
-    description: "单阶段目标检测。",
-    url: "https://arxiv.org/abs/1506.02640",
-    tags: ["视觉", "目标检测"],
-  },
-  {
-    id: "mask_rcnn",
-    title: "Mask R-CNN 实例分割",
-    authors: ["He 等"],
-    year: 2017,
-    description: "检测后再预测分割掩码。",
-    url: "https://arxiv.org/abs/1703.06870",
-    tags: ["视觉", "实例分割"],
-  },
-  {
-    id: "clip",
-    title: "CLIP 图文对齐",
-    authors: ["Radford 等"],
-    year: 2021,
-    description: "图文对比学习，跨模态对齐。",
-    url: "https://arxiv.org/abs/2103.00020",
-    tags: ["多模态", "对齐"],
-  },
-  {
-    id: "dino",
-    title: "DINO 自监督视觉",
-    authors: ["Caron 等"],
-    year: 2021,
-    description: "无标注学强视觉表示。",
-    url: "https://arxiv.org/abs/2104.14294",
-    tags: ["视觉", "自监督"],
-  },
-  {
-    id: "simclr",
-    title: "SimCLR 对比学习",
-    authors: ["Chen 等"],
-    year: 2020,
-    description: "用对比损失学通用表示。",
-    url: "https://arxiv.org/abs/2002.05709",
-    tags: ["表示学习", "自监督"],
-  },
-  {
-    id: "ddpm",
-    title: "DDPM 扩散模型",
-    authors: ["Ho 等"],
-    year: 2020,
-    description: "逐步加噪，再逐步去噪。",
-    url: "https://arxiv.org/abs/2006.11239",
-    tags: ["生成", "扩散"],
-  },
-  {
-    id: "stable_diffusion",
-    title: "Stable Diffusion",
-    authors: ["Rombach 等"],
-    year: 2022,
-    description: "潜空间扩散生成图像。",
-    url: "https://arxiv.org/abs/2112.10752",
-    tags: ["生成", "扩散", "多模态"],
-  },
-  {
-    id: "nerf",
-    title: "NeRF 新视角合成",
-    authors: ["Mildenhall 等"],
-    year: 2020,
-    description: "神经辐射场重建 3D。",
-    url: "https://arxiv.org/abs/2003.08934",
-    tags: ["3D", "视觉"],
-  },
-  {
-    id: "gcn",
-    title: "GCN 图卷积",
-    authors: ["Kipf", "Welling"],
-    year: 2017,
-    description: "在图上做卷积传播。",
-    url: "https://arxiv.org/abs/1609.02907",
-    tags: ["图表示", "表示学习"],
-  },
-  {
-    id: "graphsage",
-    title: "GraphSAGE 采样聚合",
-    authors: ["Hamilton 等"],
-    year: 2017,
-    description: "可扩展的图表示学习。",
-    url: "https://arxiv.org/abs/1706.02216",
-    tags: ["图表示", "表示学习"],
-  },
-  {
-    id: "word2vec",
-    title: "word2vec 词向量",
-    authors: ["Mikolov 等"],
-    year: 2013,
-    description: "用上下文预测词向量。",
-    url: "https://arxiv.org/abs/1301.3781",
-    tags: ["自然语言", "嵌入"],
-  },
-  {
-    id: "transformer_xl",
-    title: "Transformer-XL 长序列",
-    authors: ["Dai 等"],
-    year: 2019,
-    description: "记忆机制处理长文本。",
-    url: "https://arxiv.org/abs/1901.02860",
-    tags: ["自然语言", "注意力"],
-  },
-  {
-    id: "gpt3",
-    title: "GPT-3 大模型",
-    authors: ["Brown 等"],
-    year: 2020,
-    description: "少样本学习能力。",
-    url: "https://arxiv.org/abs/2005.14165",
-    tags: ["自然语言", "大模型"],
-  },
-  {
-    id: "instructgpt",
-    title: "InstructGPT 对齐",
-    authors: ["Ouyang 等"],
-    year: 2022,
-    description: "用人类反馈做对齐。",
-    url: "https://arxiv.org/abs/2203.02155",
-    tags: ["自然语言", "对齐", "大模型"],
-  },
-  {
-    id: "dqn",
-    title: "DQN 深度 Q 学习",
-    authors: ["Mnih 等"],
-    year: 2015,
-    description: "用 CNN 学玩 Atari。",
-    url: "https://arxiv.org/abs/1312.5602",
-    tags: ["强化学习"],
-  },
-  {
-    id: "ppo",
-    title: "PPO 稳定策略优化",
-    authors: ["Schulman 等"],
-    year: 2017,
-    description: "限制步长的策略更新。",
-    url: "https://arxiv.org/abs/1707.06347",
-    tags: ["强化学习", "优化"],
-  },
-  {
-    id: "alphago_zero",
-    title: "AlphaGo Zero",
-    authors: ["Silver 等"],
-    year: 2017,
-    description: "自我对弈学围棋。",
-    url: "https://arxiv.org/abs/1712.01815",
-    tags: ["强化学习"],
-  },
-  {
-    id: "rag",
-    title: "RAG 检索增强",
-    authors: ["Lewis 等"],
-    year: 2020,
-    description: "检索 + 生成，回答更准。",
-    url: "https://arxiv.org/abs/2005.11401",
-    tags: ["自然语言", "检索"],
-  },
-  {
-    id: "bart",
-    title: "BART 文本去噪",
-    authors: ["Lewis 等"],
-    year: 2019,
-    description: "去噪自编码预训练。",
-    url: "https://arxiv.org/abs/1910.13461",
-    tags: ["自然语言", "预训练"],
-  },
-  {
-    id: "t5",
-    title: "T5 文本到文本",
-    authors: ["Raffel 等"],
-    year: 2019,
-    description: "统一 NLP 任务范式。",
-    url: "https://arxiv.org/abs/1910.10683",
-    tags: ["自然语言", "预训练"],
-  },
-];
+const topicTagMap: Record<string, string[]> = {
+  Alignment: ["对齐"],
+  Architecture: ["架构", "Transformer"],
+  Code: ["代码"],
+  Evaluation: ["评测"],
+  Inference: ["推理", "加速"],
+  Multimodal: ["多模态"],
+  Pretraining: ["预训练"],
+  Prompting: ["提示"],
+  Reasoning: ["推理"],
+  Retrieval: ["检索"],
+  Safety: ["安全"],
+  Scaling: ["扩展"],
+  Systems: ["系统"],
+  Tools: ["工具"],
+  Training: ["训练", "微调"],
+  Vision: ["视觉"],
+};
+
+const difficultyMap: Record<string, Paper["difficulty"]> = {
+  Architecture: "进阶",
+  Training: "进阶",
+  Alignment: "进阶",
+  Inference: "入门",
+  Vision: "进阶",
+  Retrieval: "入门",
+  Pretraining: "进阶",
+  Scaling: "硬核",
+  Systems: "硬核",
+  Safety: "进阶",
+  Reasoning: "进阶",
+  Prompting: "入门",
+  Tools: "入门",
+  Evaluation: "入门",
+  Code: "入门",
+  Multimodal: "进阶",
+};
+
+const titleOverrides: Record<string, string> = {
+  attention_is_all_you_need: "注意力就是一切",
+};
+
+const toPaperId = (seedId: string) => seedId.replace(/-/g, "_");
+
+const makeTitle = (hook: string, fallback: string) => {
+  const cut = hook.split("，")[0].split("。")[0].trim();
+  return cut || fallback;
+};
+
+const parseAuthors = (sourceTitle: string) => {
+  const [authors] = sourceTitle.split(",");
+  return authors ? [authors.trim()] : [];
+};
+
+const parseVenue = (sourceTitle: string) => {
+  const [, ...rest] = sourceTitle.split(",");
+  const venue = rest.join(",").trim();
+  return venue || undefined;
+};
+
+const parseYear = (sourceTitle: string) => {
+  const match = sourceTitle.match(/(19|20)\d{2}/);
+  return match ? Number(match[0]) : undefined;
+};
+
+export const papers: Paper[] = (seeds as Seed[]).map((seed) => {
+  const id = toPaperId(seed.id);
+  const summary = seed.cards.hook;
+  const tags = topicTagMap[seed.topic] ?? ["通用"];
+  const title = titleOverrides[id] ?? makeTitle(summary, seed.title);
+  return {
+    id,
+    title,
+    summary,
+    description: summary,
+    tags,
+    difficulty: difficultyMap[seed.topic] ?? "进阶",
+    year: parseYear(seed.source.title),
+    authors: parseAuthors(seed.source.title),
+    venue: parseVenue(seed.source.title),
+    source: seed.source,
+  };
+});
+
+export const allTags = Array.from(new Set(papers.flatMap((paper) => paper.tags)));
+
+export const findPaperById = (paperId: string) =>
+  papers.find((paper) => paper.id === paperId);

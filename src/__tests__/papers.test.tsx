@@ -8,5 +8,5 @@ it("filters papers by search", async () => {
   renderWithRouter(<Papers />);
   const input = screen.getByPlaceholderText("搜索论文或标签...");
   await userEvent.type(input, "注意力");
-  expect(screen.getByText("注意力就是一切")).toBeInTheDocument();
+  expect(await screen.findByText("注意力就是一切")).toBeInTheDocument();
 });

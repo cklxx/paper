@@ -2,7 +2,7 @@ import json
 import os
 import sqlite3
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, Optional
 
 from .models import Paper, Source
 
@@ -71,7 +71,7 @@ def list_papers() -> list[Paper]:
     ]
 
 
-def fetch_paper(paper_id: str) -> Paper | None:
+def fetch_paper(paper_id: str) -> Optional[Paper]:
     with get_connection() as conn:
         row = conn.execute(
             """

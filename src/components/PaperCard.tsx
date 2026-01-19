@@ -6,10 +6,14 @@ import { paperTagStyles } from "../data/papers";
 const badgeBase =
   "inline-flex items-center justify-center rounded-full border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden";
 
+type Progress = {
+  completed: number;
+  total: number;
+};
+
 type PaperCardProps = {
   paper: Paper;
-  progress?: number;
-  showProgress?: boolean;
+  progress?: Progress;
 };
 
 function formatAuthors(authors: string[]) {
@@ -19,7 +23,10 @@ function formatAuthors(authors: string[]) {
   return authors.join("、");
 }
 
-export default function PaperCard({ paper, progress = 0, showProgress = false }: PaperCardProps) {
+export default function PaperCard({ paper, progress }: PaperCardProps) {
+  const percent = progress?.total ? Math.round((progress.completed / progress.total) * 100) : 0;
+  const summary = paper.summary || paper.description;
+
   return (
     <Link className="group block h-full" to={`/papers/${paper.id}`}>
       <motion.div className="h-full" whileHover={{ y: -5 }} transition={{ duration: 0.2 }}>
@@ -28,8 +35,13 @@ export default function PaperCard({ paper, progress = 0, showProgress = false }:
           <div className="flex flex-col h-full p-6 relative z-10">
             <div className="flex justify-between items-start gap-2 mb-4">
               <div className="flex flex-wrap gap-2">
+                {paper.year ? (
+                  <span className={`${badgeBase} font-mono text-xs border-transparent bg-secondary/50 backdrop-blur-sm`}>
+                    {paper.year}
+                  </span>
+                ) : null}
                 <span className={`${badgeBase} font-mono text-xs border-transparent bg-secondary/50 backdrop-blur-sm`}>
-                  {paper.year}
+                  {paper.difficulty}
                 </span>
                 {paper.tags.map((tag) => (
                   <span
@@ -65,15 +77,17 @@ export default function PaperCard({ paper, progress = 0, showProgress = false }:
             </h3>
             <p className="font-mono text-xs text-muted-foreground mb-4">{formatAuthors(paper.authors)}</p>
             <div className="flex-1 flex flex-col justify-end gap-4">
-              <p className="text-muted-foreground text-sm line-clamp-3 leading-relaxed">{paper.description}</p>
-              {showProgress && progress > 0 ? (
+              <p className="text-muted-foreground text-sm line-clamp-3 leading-relaxed">{summary}</p>
+              {progress && progress.total > 0 ? (
                 <div className="space-y-1">
                   <div className="flex justify-between text-xs text-muted-foreground">
                     <span>进度</span>
-                    <span>{progress}%</span>
+                    <span>
+                      {progress.completed}/{progress.total}
+                    </span>
                   </div>
                   <div className="h-1 bg-muted/50 rounded-full overflow-hidden">
-                    <div className="h-full bg-primary/80" style={{ width: `${progress}%` }} />
+                    <div className="h-full bg-primary/80" style={{ width: `${percent}%` }} />
                   </div>
                 </div>
               ) : null}

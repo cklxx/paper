@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import PaperCard from "../components/PaperCard";
 import { paperFilterStyles, papers } from "../data/papers";
 import { useLocalStorageState } from "../hooks/useLocalStorageState";
+import { useProgress } from "../hooks/useProgress";
 
 const badgeBase =
   "inline-flex items-center justify-center rounded-full border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden";
@@ -10,6 +11,7 @@ const badgeBase =
 export default function Papers() {
   const [query, setQuery] = useLocalStorageState("pc.search", "");
   const [activeTags, setActiveTags] = useLocalStorageState<string[]>("pc.filters", []);
+  const { getCounts } = useProgress();
 
   const tags = useMemo(() => {
     const tagSet = new Set<string>();
@@ -24,7 +26,7 @@ export default function Papers() {
     return papers.filter((paper) => {
       const matchesQuery = normalized
         ? paper.title.toLowerCase().includes(normalized) ||
-          paper.description.toLowerCase().includes(normalized) ||
+          paper.summary.toLowerCase().includes(normalized) ||
           paper.tags.some((tag) => tag.toLowerCase().includes(normalized))
         : true;
       const matchesTags = activeTags.length ? paper.tags.some((tag) => activeTags.includes(tag)) : true;
@@ -134,7 +136,7 @@ export default function Papers() {
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ duration: 0.2 }}
             >
-              <PaperCard paper={paper} />
+              <PaperCard paper={paper} progress={getCounts(paper.id)} />
             </motion.div>
           ))}
         </AnimatePresence>

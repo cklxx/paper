@@ -1,7 +1,7 @@
 import hashlib
 import re
 from dataclasses import dataclass
-from typing import Iterable
+from typing import Iterable, Optional
 
 import httpx
 
@@ -70,7 +70,7 @@ class AiTranscriber:
 
 
 class PaperCrawler:
-    def __init__(self, client: httpx.Client | None = None, transcriber: AiTranscriber | None = None):
+    def __init__(self, client: Optional[httpx.Client] = None, transcriber: Optional[AiTranscriber] = None):
         self.client = client or httpx.Client(timeout=10)
         self.transcriber = transcriber or AiTranscriber()
 
